@@ -15,9 +15,9 @@ Public Class MainForm
         If (Not System.IO.Directory.Exists("C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
             If (Not System.IO.Directory.Exists("C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
                 If (Not System.IO.Directory.Exists("E:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
-                    If (Not System.IO.Directory.Exists("E:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
-                        If (Not System.IO.Directory.Exists("E:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
-                            If (Not System.IO.Directory.Exists("E:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
+                    If (Not System.IO.Directory.Exists("C:\Games\Stardew Valley")) Then
+                        If (Not System.IO.Directory.Exists("D:\Games\Stardew Valley")) Then
+                            If (Not System.IO.Directory.Exists("E:\Games\Stardew Valley")) Then
                                 Dim Result As Integer = MsgBox("Couldnt Find Stardew Valley, are you sure it is installed. If so please write in the official Forunpost. You browser will direclty get you to it if you press Yes.", MsgBoxStyle.YesNo)
                                 If Result = DialogResult.Yes Then
                                     System.Diagnostics.Process.Start("http://community.playstarbound.com/threads/fairly-simple-mod-manager-batch-based.107663/")
