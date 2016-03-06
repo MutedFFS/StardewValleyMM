@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.IO.Compression
 Public Class MainForm
+    Dim appPath As String = Application.StartupPath()
     Dim smdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
     Dim diar1 As IO.FileInfo() = smdir.GetFiles("*.dll")
     Dim diar2 As IO.FileInfo() = smdir.GetFiles("*.xnb")
@@ -9,8 +10,9 @@ Public Class MainForm
     Dim folder = "C:\"
     Dim Sfolder = "C:\"
     Dim gog = 0
+    Dim appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
 
-Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
+    Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
 
     Private Declare Ansi Function WritePrivateProfileString Lib "kernel32.dll" Alias "WritePrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpString As String, ByVal lpFileName As String) As Int32
 
@@ -91,20 +93,20 @@ Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "
             Sfolder = INI_ReadValueFromFile("General", "SteamFolder", "C:\", Application.UserAppDataPath & "\SDVNN.ini")
             gog = INI_ReadValueFromFile("General", "Good Old Game Version", 0, Application.UserAppDataPath & "\SDVNN.ini")
         End If
-        If System.IO.File.Exists(Application.UserAppDataPath & "\Update\StardewModdingAPI.exe") Then
+        If System.IO.File.Exists(appPath & "\Update\StardewModdingAPI.exe") Then
             If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
                 Call Update()
             End If
         End If
-        Dim Check = Directory.GetFiles(Application.UserAppDataPath & "\Update\", "*.zip")
+        Dim Check = Directory.GetFiles(appPath & "\Update\", "*.zip")
         If Check.Length = 1 Then
             If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
-                Dim fileEntries As String() = Directory.GetFiles(Application.UserAppDataPath & "\Update\", "*.zip")
+                Dim fileEntries As String() = Directory.GetFiles(appPath & "\Update\", "*.zip")
                 Dim sOnlyFileName As String
                 For Each sFileName In fileEntries
                     sOnlyFileName = System.IO.Path.GetFileName(sFileName)
                 Next
-                extract(Application.UserAppDataPath & "\Update\" & sOnlyFileName, Application.UserAppDataPath & "\Update\")
+                extract(appPath & "\Update\" & sOnlyFileName, appPath & "\Update\")
             End If
         End If
         If (Not System.IO.File.Exists(folder & "\StardewModdingAPI.exe")) Then
@@ -123,10 +125,33 @@ Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "
         MsgBox("Sorry, i couldnt detect you Installations Path. But no worry we can fix this! Just answer the follwoing Prompts.", MsgBoxStyle.OkOnly, "Huston we have an Problem!")
         If MsgBox("Do you own the GoG (God old Games) Version?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
             gog = 1
-            folder = InputBox("Pease Input the Full Path of you StardewValley installation", "Nearly Done!", "Example: C:\games\StardewValley\")
+            folder = InputBox("Pease Input the Full Path of you StardewValley installation", "Nearly Done!", "Example: C:\games\StardewValley")
+            While (Not System.IO.Directory.Exists(folder))
+                folder = InputBox("Couldnt not find th Path, Please Try again", "Nearly Done!", "Example: C:\games\StardewValley")
+            End While
         Else
-            Sfolder = InputBox("Pease Input the  Path to your Steam Folder", "Nearly Done!", "Example: C:\Program Files (x86)\Steam\")
-            folder = Sfolder & "steamapps\common\Stardew Valley"
+            Sfolder = InputBox("Please Input the  Path to your Steam Folder", "Nearly Done!", "Example: C:\Program Files (x86)\Steam")
+            While (Not System.IO.Directory.Exists(Sfolder))
+                Sfolder = InputBox("Couldnt find the Path, Please try again", "Nearly Done!", "Example: C:\Program Files (x86)\Steam")
+            End While
+            If (Not System.IO.Directory.Exists(Sfolder & "steamapps\common\Stardew Valley")) Then
+                folder = InputBox("Pease Input the  Path to your Stardew Valley Folder", "Nearly Done!", "Example: C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")
+                While (Not System.IO.Directory.Exists(folder))
+                    folder = InputBox("Couldnt not find th Path, Please Try again", "Nearly Done!", "Example: C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")
+                End While
+            Else
+                folder = Sfolder & "steamapps\common\Stardew Valley"
+            End If
+            If (Not System.IO.Directory.Exists(Sfolder & "\steamapps\common\Stardew Valley\Stardew Valley.exe")) Then
+                folder = InputBox("Pease Input the  Path to your Stardew Valley Folder", "Nearly Done!", "Example: C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")
+                If (Not System.IO.Directory.Exists(folder)) Then
+                    folder = InputBox("Couldnt not find th Path, Please Try again", "Nearly Done!", "Example: C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")
+                Else
+                End If
+            Else
+                folder = Sfolder & "steamapps\common\Stardew Valley"
+            End If
+
         End If
         INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath & "\SDVNN.ini")
         INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVNN.ini")
@@ -134,7 +159,7 @@ Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "
     End Sub
 
     Sub Update()
-        For Each foundFile As String In My.Computer.FileSystem.GetFiles(Application.UserAppDataPath & "\Update\", Microsoft.VisualBasic.FileIO.SearchOption.SearchAllSubDirectories, "*.*")
+        For Each foundFile As String In My.Computer.FileSystem.GetFiles(appPath & "\Update\", Microsoft.VisualBasic.FileIO.SearchOption.SearchAllSubDirectories, "*.*")
             Dim foundFileInfo As New System.IO.FileInfo(foundFile)
             Dim ext = Path.GetExtension(foundFile)
             If ext = ".dll" Then
@@ -143,13 +168,18 @@ Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "
                 My.Computer.FileSystem.MoveFile(foundFile, folder & "\" & foundFileInfo.Name, True)
             End If
         Next
-        System.IO.Directory.Delete(Application.UserAppDataPath & "\Update\", True)
-        System.IO.Directory.CreateDirectory(Application.UserAppDataPath & "\Update\")
+        System.IO.Directory.Delete(appPath & "\Update\", True)
+        System.IO.Directory.CreateDirectory(appPath & "\Update\")
+        While (Not System.IO.Directory.Exists(appPath & "\Update\"))
+            System.IO.Directory.CreateDirectory(appPath & "\Update\")
+        End While
     End Sub
 
 
     Sub extract(ByVal zPath, ByVal ePath)
         ZipFile.ExtractToDirectory(zPath, ePath)
+        System.IO.File.Delete(zPath)
+        MsgBox("hi")
         Call Update()
     End Sub
 
@@ -212,8 +242,8 @@ Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "
     End Sub
 
     Sub UpdateSNAPI(url)
-        My.Computer.Network.DownloadFile(url, Application.UserAppDataPath & "\Update\update.zip", "", "", True, 500, True)
-        extract(Application.UserAppDataPath & "\Update\update.zip", Application.UserAppDataPath & "\Update\")
+        My.Computer.Network.DownloadFile(url, appPath & "\Update\update.zip", "", "", True, 500, True)
+        extract(appPath & "\Update\update.zip", appPath & "\Update\")
     End Sub
 
 
@@ -237,4 +267,7 @@ Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "
     'Dim r As String = InputBox("Please Enter the Download URL of the newest version.", "URL", "https://github.com/ClxS/SMAPI/releases/download/0.36/SMAPI_0.36A.zip")
     '   UpdateSNAPI(r)
     'End Sub
+
+
+
 End Class
