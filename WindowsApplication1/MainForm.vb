@@ -2,6 +2,9 @@
 Imports System.IO.Compression
 Public Class MainForm
     Public Shared xpath As String = ""
+    Public Shared Multiok = 0
+    Public Shared Mulitcount = 0
+    Public Shared Fname As String = ""
     Dim appPath As String = Application.StartupPath()
     Dim smdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
     Dim dmdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
@@ -12,6 +15,7 @@ Public Class MainForm
     Public Shared folder = "C:\"
     Dim Sfolder = "C:\"
     Dim gog = 0
+
 
     Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
 
@@ -39,6 +43,7 @@ Public Class MainForm
     End Function
 
     Private Sub SDVMM_Startup() Handles Me.Shown
+
         If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini")) Then
             If (Not System.IO.Directory.Exists("C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
                 If (Not System.IO.Directory.Exists("C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
@@ -134,7 +139,6 @@ Public Class MainForm
                 ModListd.Items.Add(dra)
             End If
         Next
-
     End Sub
 
     Private Sub INI()
@@ -234,19 +238,30 @@ Public Class MainForm
         openFileDialog1.FilterIndex = 2
         openFileDialog1.Title = "Select SMAPI-Mod"
         openFileDialog1.RestoreDirectory = True
+        openFileDialog1.Multiselect = True
         If openFileDialog1.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
             Try
                 myStream = openFileDialog1.OpenFile()
                 If myStream IsNot Nothing Then
-                    Dim tdir = ddir & Path.GetFileName(openFileDialog1.FileName)
-                    Dim ext = Path.GetExtension(openFileDialog1.FileName)
-                    If ext = ".xnb" Then
-                        xpath = openFileDialog1.FileName
-                        installXNB()
-                    Else
-                        IO.File.Copy(openFileDialog1.FileName, tdir)
-                        ModList.Items.Add(Path.GetFileName(openFileDialog1.FileName))
-                    End If
+                    For Each s As String In openFileDialog1.FileNames
+                        Mulitcount += 1
+                    Next
+                    For Each s As String In openFileDialog1.FileNames
+                        Fname = Path.GetFileName(s)
+                        Dim tdir = ddir & Path.GetFileName(s)
+                        Dim ext = Path.GetExtension(s)
+                        If ext = ".xnb" Then
+                            xpath = s
+                            installXNB()
+                        Else
+                            IO.File.Copy(s, tdir)
+                            If ModList.Items.Contains(Path.GetFileName(s)) = False Then
+                                ModList.Items.Add(Path.GetFileName(s))
+                            End If
+                        End If
+                    Next
+                    Multiok = 0
+                    Mulitcount = 0
                 End If
 
             Catch Ex As Exception
@@ -263,14 +278,18 @@ Public Class MainForm
     Sub installXNB()
         Dim Form As New XNBForm
         'open XNB Form
-        Form.ShowDialog()
+        If Multiok = 0 Then
+            Form.ShowDialog()
+        End If
         'Parse folder from form
-        Dim xtpath = XNBForm.XtFolder
-        Dim name = Date.Today & "-" & Path.GetFileName(xtpath)
+        Dim xtpath = XNBForm.XtFolder & "\" & Fname
+        Dim name = shPath(XNBForm.XtFolder) & "-" & Fname
         My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
         IO.File.Copy(xpath, xtpath)
         INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\SDVNN.ini")
-        ModList.Items.Add(name)
+        If ModList.Items.Contains(name) = False Then
+            ModList.Items.Add(name)
+        End If
     End Sub
 
     Sub deleteXNB(name As String)
@@ -380,4 +399,26 @@ Public Class MainForm
             End If
         End If
     End Sub
+
+Function GetFolderName(ByVal sDir As String) As String
+        Dim sPos As Long
+        Dim ePos As Long
+        sPos = InStrRev(sDir, "\", 1)
+        ePos = InStrRev(sDir, "\", sPos)
+        GetFolderName = Mid(sDir, sPos + 1, ePos - 1)
+    End Function
+
+
+    Function shPath(mypath As String)
+        Dim myPos As Integer
+        Dim myFolder As String
+
+        myPos = InStrRev(myPath, "\", -1, vbTextCompare)
+
+        If myPos > 0 Then
+            myFolder = Mid(myPath, myPos + 1)
+            Return myFolder
+        End If
+
+    End Function
 End Class

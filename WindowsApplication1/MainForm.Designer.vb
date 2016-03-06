@@ -34,6 +34,7 @@ Partial Class MainForm
         Me.ModListd = New System.Windows.Forms.ListBox()
         Me.dModList = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.Button1 = New System.Windows.Forms.Button()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -138,6 +139,15 @@ Partial Class MainForm
         Me.Label3.TabIndex = 12
         Me.Label3.Text = "Activated Mods"
         '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(361, 175)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 13
+        Me.Button1.Text = "Button1"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
         'MainForm
         '
         Me.AccessibleName = "FoundMods"
@@ -146,6 +156,7 @@ Partial Class MainForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(740, 466)
+        Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.dModList)
         Me.Controls.Add(Me.ModListd)
@@ -178,5 +189,6 @@ Partial Class MainForm
     Friend WithEvents ModListd As System.Windows.Forms.ListBox
     Friend WithEvents dModList As System.Windows.Forms.Label
     Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents Button1 As System.Windows.Forms.Button
 
 End Class
