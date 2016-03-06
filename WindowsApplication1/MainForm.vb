@@ -249,13 +249,17 @@ Public Class MainForm
 
     Private Sub delm_Click(sender As Object, e As EventArgs) Handles delm.Click
         Dim mIndex As Integer = ModList.SelectedIndex
-        ' der Name des Eintrages zu einer brauchbaren Variable bringen 
-        Dim mText = ModList.Items.Item(mIndex)
-        Dim Result As Integer = MsgBox("are you sure that you want to delete: " & mText.ToString & "?", MsgBoxStyle.YesNo)
-        If Result = DialogResult.Yes Then
-            Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
-            System.IO.File.Delete(deldir & mText.ToString)
-            ModList.Items.Remove(mText)
+        If mIndex >= 0 Then
+            Dim mText = ModList.Items.Item(mIndex)
+            Dim Result As Integer = MsgBox("are you sure that you want to delete: " & mText.ToString & "?", MsgBoxStyle.YesNo)
+            If Result = DialogResult.Yes Then
+                Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
+                System.IO.File.Delete(deldir & mText.ToString)
+                ModList.Items.Remove(mText)
+            End If
+        Else
+            MsgBox("No Mod to delete selected.", MsgBoxStyle.OkOnly, "no mod selected")
+            Exit Sub
         End If
     End Sub
 
@@ -270,4 +274,7 @@ Public Class MainForm
 
 
 
+    ' Private Sub ModList_SelectedIndexChanged(e As EventArgs) Handles ModList.DoubleClick
+    '   Process.Start(appdata & "\Mods")
+    'End Sub
 End Class
