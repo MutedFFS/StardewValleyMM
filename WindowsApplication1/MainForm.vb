@@ -1,16 +1,17 @@
 ﻿Imports System.IO
 Imports System.IO.Compression
 Public Class MainForm
+    Public Shared xpath As String = ""
     Dim appPath As String = Application.StartupPath()
     Dim smdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
+    Dim dmdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
     Dim diar1 As IO.FileInfo() = smdir.GetFiles("*.dll")
-    Dim diar2 As IO.FileInfo() = smdir.GetFiles("*.xnb")
+    Dim diar2 As IO.FileInfo() = dmdir.GetFiles("*.dll")
     Dim dra As IO.FileInfo
     Dim check1 = 0
-    Dim folder = "C:\"
+    Public Shared folder = "C:\"
     Dim Sfolder = "C:\"
     Dim gog = 0
-    Dim appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
 
     Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
 
@@ -106,7 +107,7 @@ Public Class MainForm
                 For Each sFileName In fileEntries
                     sOnlyFileName = System.IO.Path.GetFileName(sFileName)
                 Next
-                extract(appPath & "\Update\" & sOnlyFileName, appPath & "\Update\")
+                zip(appPath & "\Update\" & sOnlyFileName, appPath & "\Update\", 1, True)
             End If
         End If
         If (Not System.IO.File.Exists(folder & "\StardewModdingAPI.exe")) Then
@@ -119,6 +120,21 @@ Public Class MainForm
                 ModList.Items.Add(dra)
             End If
         Next
+        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVNN.ini")
+        For Each item As String In arr
+            If item.Contains("=") Then
+                If item.Contains("Content") Then
+                    Dim param() As String = item.Split("="c)
+                    ModList.Items.Add(param(0))
+                End If
+            End If
+        Next
+        For Each dra In diar2
+            If ModListd.Items.Contains(dra) = False Then
+                ModListd.Items.Add(dra)
+            End If
+        Next
+
     End Sub
 
     Private Sub INI()
@@ -158,6 +174,7 @@ Public Class MainForm
         INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVNN.ini")
     End Sub
 
+
     Sub Update()
         For Each foundFile As String In My.Computer.FileSystem.GetFiles(appPath & "\Update\", Microsoft.VisualBasic.FileIO.SearchOption.SearchAllSubDirectories, "*.*")
             Dim foundFileInfo As New System.IO.FileInfo(foundFile)
@@ -176,11 +193,16 @@ Public Class MainForm
     End Sub
 
 
-    Sub extract(ByVal zPath, ByVal ePath)
-        ZipFile.ExtractToDirectory(zPath, ePath)
-        System.IO.File.Delete(zPath)
-        MsgBox("hi")
-        Call Update()
+    Sub zip(zPath As String, dPath As String, mode As Integer, up As Boolean)
+        If mode = 0 Then
+            ZipFile.CreateFromDirectory(zPath, dPath)
+        Else
+            ZipFile.ExtractToDirectory(zPath, dPath)
+            System.IO.File.Delete(zPath)
+        End If
+        If up = True Then
+            Call Update()
+        End If
     End Sub
 
     Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
@@ -208,19 +230,23 @@ Public Class MainForm
         Dim openFileDialog1 As New OpenFileDialog()
         Dim ddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
         openFileDialog1.InitialDirectory = "c:\"
-        openFileDialog1.Filter = "SMAPI Mod files (*.dll)|*.dll"
+        openFileDialog1.Filter = "SMAPI Mod files (*.dll)|*.dll|XNB Mods (*.XNB)|*.xnb"
         openFileDialog1.FilterIndex = 2
         openFileDialog1.Title = "Select SMAPI-Mod"
         openFileDialog1.RestoreDirectory = True
         If openFileDialog1.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
             Try
                 myStream = openFileDialog1.OpenFile()
-                'MsgBox(openFileDialog1.FileName)
-                'MsgBox(Path.GetFileName(openFileDialog1.FileName))
                 If myStream IsNot Nothing Then
                     Dim tdir = ddir & Path.GetFileName(openFileDialog1.FileName)
-                    IO.File.Copy(openFileDialog1.FileName, tdir)
-                    ModList.Items.Add(Path.GetFileName(openFileDialog1.FileName))
+                    Dim ext = Path.GetExtension(openFileDialog1.FileName)
+                    If ext = ".xnb" Then
+                        xpath = openFileDialog1.FileName
+                        installXNB()
+                    Else
+                        IO.File.Copy(openFileDialog1.FileName, tdir)
+                        ModList.Items.Add(Path.GetFileName(openFileDialog1.FileName))
+                    End If
                 End If
 
             Catch Ex As Exception
@@ -234,6 +260,38 @@ Public Class MainForm
         End If
     End Sub
 
+    Sub installXNB()
+        Dim Form As New XNBForm
+        'open XNB Form
+        Form.ShowDialog()
+        'Parse folder from form
+        Dim xtpath = XNBForm.XtFolder
+        Dim name = Date.Today & "-" & Path.GetFileName(xtpath)
+        My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
+        IO.File.Copy(xpath, xtpath)
+        INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\SDVNN.ini")
+        ModList.Items.Add(name)
+    End Sub
+
+    Sub deleteXNB(name As String)
+        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVNN.ini")
+        For Each item As String In arr
+            If item.Contains("=") Then
+                If item.Contains("Content") Then
+                    If item.Contains(name) Then
+                        Dim param() As String = item.Split("="c)
+                        'MsgBox(param(0)) 'output the name
+                        My.Computer.FileSystem.MoveFile(appPath & "\Backup\" & param(0), param(1), True)
+                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\SDVNN.ini")
+                        ModList.Items.Remove(param(0))
+                    End If
+
+                End If
+            End If
+        Next
+
+    End Sub
+
     Private Sub dlm_Click(sender As Object, e As EventArgs) Handles dlm.Click
         Dim Result As Integer = MsgBox("The Mod Subforum will be opened, are you alright with this?", MsgBoxStyle.YesNo)
         If Result = DialogResult.Yes Then
@@ -243,24 +301,31 @@ Public Class MainForm
 
     Sub UpdateSNAPI(url)
         My.Computer.Network.DownloadFile(url, appPath & "\Update\update.zip", "", "", True, 500, True)
-        extract(appPath & "\Update\update.zip", appPath & "\Update\")
+        zip(appPath & "\Update\update.zip", appPath & "\Update\", 1, True)
     End Sub
 
 
     Private Sub delm_Click(sender As Object, e As EventArgs) Handles delm.Click
         Dim mIndex As Integer = ModList.SelectedIndex
+        Dim mText = ModList.Items.Item(mIndex)
         If mIndex >= 0 Then
-            Dim mText = ModList.Items.Item(mIndex)
+
             Dim Result As Integer = MsgBox("are you sure that you want to delete: " & mText.ToString & "?", MsgBoxStyle.YesNo)
             If Result = DialogResult.Yes Then
-                Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
-                System.IO.File.Delete(deldir & mText.ToString)
-                ModList.Items.Remove(mText)
+                If Path.GetExtension(mText.ToString) = ".dll" Then
+                    Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
+                    System.IO.File.Delete(deldir & mText.ToString)
+                    ModList.Items.Remove(mText)
+                Else
+                    deleteXNB(mText)
+                End If
+            Else
+                MsgBox("No Mod to delete selected.", MsgBoxStyle.OkOnly, "no mod selected")
+                Exit Sub
             End If
-        Else
-            MsgBox("No Mod to delete selected.", MsgBoxStyle.OkOnly, "no mod selected")
-            Exit Sub
-        End If
+
+            End If
+
     End Sub
 
     Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
@@ -274,7 +339,31 @@ Public Class MainForm
 
 
 
-    ' Private Sub ModList_SelectedIndexChanged(e As EventArgs) Handles ModList.DoubleClick
-    '   Process.Start(appdata & "\Mods")
-    'End Sub
+    Private Sub ModListd_dc(sender As Object, e As EventArgs) Handles ModListd.DoubleClick
+        Dim mIndex As Integer = ModListd.SelectedIndex
+        If mIndex >= 0 Then
+            Dim mText = ModListd.Items.Item(mIndex)
+            Dim spath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & mText.ToString
+            Dim tpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & mText.ToString
+            My.Computer.FileSystem.MoveFile(spath, tpath)
+            ModListd.Items.Remove(mText)
+            ModList.Items.Add(mText)
+        End If
+    End Sub
+
+    Private Sub ModList_dc(sender As Object, e As EventArgs) Handles ModList.DoubleClick
+        Dim mIndex As Integer = ModList.SelectedIndex
+        Dim mText = ModList.Items.Item(mIndex)
+        If mIndex >= 0 Then
+            If Path.GetExtension(mText.tostring) = ".dll" Then
+                Dim spath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & mText.ToString
+                Dim tpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & mText.ToString
+                My.Computer.FileSystem.MoveFile(spath, tpath)
+                ModList.Items.Remove(mText)
+                ModListd.Items.Add(mText)
+            Else
+                MsgBox("Not yet possible, sorry!",MsgBoxStyle.Information)
+            End If
+        End If
+    End Sub
 End Class

@@ -6,8 +6,14 @@ Module Main
         If (Not System.IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")) Then
             System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
         End If
+        If (Not System.IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")) Then
+            System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
+        End If
         If (Not System.IO.Directory.Exists(appPath & "\Update\")) Then
             System.IO.Directory.CreateDirectory(appPath & "\Update\")
+        End If
+        If (Not System.IO.Directory.Exists(appPath & "\Backup\")) Then
+            System.IO.Directory.CreateDirectory(appPath & "\Backup\")
         End If
 
         Application.EnableVisualStyles()

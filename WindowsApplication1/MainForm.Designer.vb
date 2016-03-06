@@ -31,6 +31,9 @@ Partial Class MainForm
         Me.delm = New System.Windows.Forms.Button()
         Me.ModList = New System.Windows.Forms.ListBox()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.ModListd = New System.Windows.Forms.ListBox()
+        Me.dModList = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -68,7 +71,7 @@ Partial Class MainForm
         Me.LSDV.Name = "LSDV"
         Me.LSDV.Size = New System.Drawing.Size(269, 40)
         Me.LSDV.TabIndex = 5
-        Me.LSDV.Text = "Launch StardewValley"
+        Me.LSDV.Text = "Launch Stardew Valley"
         Me.LSDV.UseVisualStyleBackColor = True
         '
         'dlm
@@ -94,18 +97,46 @@ Partial Class MainForm
         Me.ModList.FormattingEnabled = True
         Me.ModList.Location = New System.Drawing.Point(10, 212)
         Me.ModList.Name = "ModList"
-        Me.ModList.Size = New System.Drawing.Size(423, 225)
+        Me.ModList.Size = New System.Drawing.Size(210, 225)
         Me.ModList.TabIndex = 8
         '
         'Label1
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(7, 186)
+        Me.Label1.Location = New System.Drawing.Point(174, 176)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(99, 16)
         Me.Label1.TabIndex = 9
         Me.Label1.Text = "Installed Mods"
+        '
+        'ModListd
+        '
+        Me.ModListd.FormattingEnabled = True
+        Me.ModListd.Location = New System.Drawing.Point(226, 212)
+        Me.ModListd.Name = "ModListd"
+        Me.ModListd.Size = New System.Drawing.Size(210, 225)
+        Me.ModListd.TabIndex = 10
+        '
+        'dModList
+        '
+        Me.dModList.AutoSize = True
+        Me.dModList.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.dModList.Location = New System.Drawing.Point(223, 194)
+        Me.dModList.Name = "dModList"
+        Me.dModList.Size = New System.Drawing.Size(108, 15)
+        Me.dModList.TabIndex = 11
+        Me.dModList.Text = "Deactivated Mods"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label3.Location = New System.Drawing.Point(7, 194)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(94, 15)
+        Me.Label3.TabIndex = 12
+        Me.Label3.Text = "Activated Mods"
         '
         'MainForm
         '
@@ -115,6 +146,9 @@ Partial Class MainForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(740, 466)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.dModList)
+        Me.Controls.Add(Me.ModListd)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.ModList)
         Me.Controls.Add(Me.delm)
@@ -127,7 +161,7 @@ Partial Class MainForm
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MinimumSize = New System.Drawing.Size(500, 400)
         Me.Name = "MainForm"
-        Me.Text = "SDVMM V1.1b"
+        Me.Text = "SDVMM V1.2"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -141,5 +175,8 @@ Partial Class MainForm
     Friend WithEvents delm As System.Windows.Forms.Button
     Friend WithEvents ModList As System.Windows.Forms.ListBox
     Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents ModListd As System.Windows.Forms.ListBox
+    Friend WithEvents dModList As System.Windows.Forms.Label
+    Friend WithEvents Label3 As System.Windows.Forms.Label
 
 End Class

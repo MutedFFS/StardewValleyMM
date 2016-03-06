@@ -79,6 +79,13 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyListItem.vb" />
+    <Compile Include="XNBForm.Designer.vb">
+      <DependentUpon>XNBForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="XNBForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainForm.vb" />
     <Compile Include="MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
@@ -102,6 +109,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="XNBForm.resx">
+      <DependentUpon>XNBForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
