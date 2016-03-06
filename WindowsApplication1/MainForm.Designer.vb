@@ -30,6 +30,7 @@ Partial Class MainForm
         Me.dlm = New System.Windows.Forms.Button()
         Me.delm = New System.Windows.Forms.Button()
         Me.ModList = New System.Windows.Forms.ListBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -91,10 +92,20 @@ Partial Class MainForm
         'ModList
         '
         Me.ModList.FormattingEnabled = True
-        Me.ModList.Location = New System.Drawing.Point(10, 186)
+        Me.ModList.Location = New System.Drawing.Point(10, 212)
         Me.ModList.Name = "ModList"
-        Me.ModList.Size = New System.Drawing.Size(423, 251)
+        Me.ModList.Size = New System.Drawing.Size(423, 225)
         Me.ModList.TabIndex = 8
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Location = New System.Drawing.Point(7, 186)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(99, 16)
+        Me.Label1.TabIndex = 9
+        Me.Label1.Text = "Installed Mods"
         '
         'MainForm
         '
@@ -104,6 +115,7 @@ Partial Class MainForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(740, 466)
+        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.ModList)
         Me.Controls.Add(Me.delm)
         Me.Controls.Add(Me.dlm)
@@ -117,6 +129,7 @@ Partial Class MainForm
         Me.Text = "SDVMM"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
@@ -126,5 +139,6 @@ Partial Class MainForm
     Friend WithEvents dlm As System.Windows.Forms.Button
     Friend WithEvents delm As System.Windows.Forms.Button
     Friend WithEvents ModList As System.Windows.Forms.ListBox
+    Friend WithEvents Label1 As System.Windows.Forms.Label
 
 End Class

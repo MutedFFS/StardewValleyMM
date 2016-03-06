@@ -1,5 +1,5 @@
 ﻿Imports System.IO
-
+Imports System.IO.Compression
 Public Class MainForm
     Dim smdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
     Dim diar1 As IO.FileInfo() = smdir.GetFiles("*.dll")
@@ -10,8 +10,7 @@ Public Class MainForm
     Dim Sfolder = "C:\"
     Dim gog = 0
 
-
-    Private Sub SDVMM_Startup() Handles Me.Activated
+    Private Sub SDVMM_Startup() Handles Me.Shown
         If (Not System.IO.Directory.Exists("C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
             If (Not System.IO.Directory.Exists("C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
                 If (Not System.IO.Directory.Exists("E:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
@@ -46,12 +45,52 @@ Public Class MainForm
             folder = "C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley"
             Sfolder = "C:\Program Files (x86)\Steam"
         End If
+        If System.IO.File.Exists(Application.UserAppDataPath & "\Update\StardewModdingAPI.exe") Then
+            If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
+                Call Update()
+            End If
+        End If
+        Dim Check = Directory.GetFiles(Application.UserAppDataPath & "\Update\", "*.zip")
+        If Check.Length = 1 Then
+            If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
+                Dim fileEntries As String() = Directory.GetFiles(Application.UserAppDataPath & "\Update\", "*.zip")
+                Dim sOnlyFileName As String
+                For Each sFileName In fileEntries
+                    sOnlyFileName = System.IO.Path.GetFileName(sFileName)
+                Next
+                extract(Application.UserAppDataPath & "\Update\" & sOnlyFileName,Application.UserAppDataPath & "\Update\")
+            End If
+        End If
+        If (Not System.IO.File.Exists(folder & "\StardewModdingAPI.exe")) Then
+            MsgBox("Couldnt Find SMAPI, please install it yourself or Place the unpacked Files in an Folder called Update and Start again", MsgBoxStyle.Critical)
+            Application.Exit()
+        End If
         ModList.Items.Clear()
         For Each dra In diar1
             If ModList.Items.Contains(dra) = False Then
                 ModList.Items.Add(dra)
             End If
         Next
+    End Sub
+
+    Sub Update()
+        For Each foundFile As String In My.Computer.FileSystem.GetFiles(Application.UserAppDataPath & "\Update\", Microsoft.VisualBasic.FileIO.SearchOption.SearchAllSubDirectories, "*.*")
+            Dim foundFileInfo As New System.IO.FileInfo(foundFile)
+            Dim ext = Path.GetExtension(foundFile)
+            If ext = ".dll" Then
+                My.Computer.FileSystem.MoveFile(foundFile, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & foundFileInfo.Name, True)
+            Else
+                My.Computer.FileSystem.MoveFile(foundFile, folder & "\" & foundFileInfo.Name, True)
+            End If
+        Next
+        System.IO.Directory.Delete(Application.UserAppDataPath & "\Update\", True)
+        System.IO.Directory.CreateDirectory(Application.UserAppDataPath & "\Update\")
+    End Sub
+
+
+    Sub extract(ByVal zPath, ByVal ePath)
+        ZipFile.ExtractToDirectory(zPath, ePath)
+        Call Update()
     End Sub
 
     Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
@@ -90,7 +129,7 @@ Public Class MainForm
                 'MsgBox(Path.GetFileName(openFileDialog1.FileName))
                 If myStream IsNot Nothing Then
                     Dim tdir = ddir & Path.GetFileName(openFileDialog1.FileName)
-                    System.IO.File.Copy(openFileDialog1.FileName, tdir)
+                    IO.File.Copy(openFileDialog1.FileName, tdir)
                     ModList.Items.Add(Path.GetFileName(openFileDialog1.FileName))
                 End If
 
@@ -112,7 +151,10 @@ Public Class MainForm
         End If
     End Sub
 
-
+    Sub UpdateSNAPI(url)
+        My.Computer.Network.DownloadFile(url, Application.UserAppDataPath & "\Update\update.zip", "", "", True, 500, True)
+        extract(Application.UserAppDataPath & "\Update\update.zip", Application.UserAppDataPath & "\Update\")
+    End Sub
 
 
     Private Sub delm_Click(sender As Object, e As EventArgs) Handles delm.Click
@@ -123,8 +165,16 @@ Public Class MainForm
         If Result = DialogResult.Yes Then
             Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
             System.IO.File.Delete(deldir & mText.ToString)
-            ModList.Items.Remove(mIndex)
+            ModList.Items.Remove(mText)
         End If
     End Sub
 
+    Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
+
+    End Sub
+
+    'Private Sub UpSnapi_Click(sender As Object, e As EventArgs)
+    'Dim r As String = InputBox("Please Enter the Download URL of the newest version.", "URL", "https://github.com/ClxS/SMAPI/releases/download/0.36/SMAPI_0.36A.zip")
+    '   UpdateSNAPI(r)
+    'End Sub
 End Class
