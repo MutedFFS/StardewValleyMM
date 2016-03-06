@@ -307,15 +307,30 @@ Public Class MainForm
 
     Private Sub delm_Click(sender As Object, e As EventArgs) Handles delm.Click
         Dim mIndex As Integer = ModList.SelectedIndex
-        Dim mText = ModList.Items.Item(mIndex)
+        Dim mText = ModList.Items(1)
+        Dim check As Integer = 0
+        If mIndex < 0 Then
+            mIndex = ModListd.SelectedIndex
+            mText = ModListd.Items(mIndex)
+            check = 1
+        Else
+            mText = ModList.Items(mIndex)
+        End If
         If mIndex >= 0 Then
 
             Dim Result As Integer = MsgBox("are you sure that you want to delete: " & mText.ToString & "?", MsgBoxStyle.YesNo)
             If Result = DialogResult.Yes Then
                 If Path.GetExtension(mText.ToString) = ".dll" Then
-                    Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
-                    System.IO.File.Delete(deldir & mText.ToString)
-                    ModList.Items.Remove(mText)
+                    If check = 0 Then
+                        Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
+                        System.IO.File.Delete(deldir & mText.ToString)
+                        ModList.Items.Remove(mText)
+                    Else
+                        Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\"
+                        System.IO.File.Delete(deldir & mText.ToString)
+                        ModListd.Items.Remove(mText)
+                    End If
+
                 Else
                     deleteXNB(mText)
                 End If
@@ -323,8 +338,7 @@ Public Class MainForm
                 MsgBox("No Mod to delete selected.", MsgBoxStyle.OkOnly, "no mod selected")
                 Exit Sub
             End If
-
-            End If
+        End If
 
     End Sub
 
