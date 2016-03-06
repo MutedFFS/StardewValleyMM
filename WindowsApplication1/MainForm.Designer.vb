@@ -126,7 +126,7 @@ Partial Class MainForm
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
         Me.MinimumSize = New System.Drawing.Size(500, 400)
         Me.Name = "MainForm"
-        Me.Text = "SDVMM"
+        Me.Text = "SDVMM V1.1"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()

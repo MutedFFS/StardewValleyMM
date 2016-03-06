@@ -7,7 +7,6 @@ Module Main
         End If
         If (Not System.IO.Directory.Exists(Application.UserAppDataPath & "\Update\")) Then
             System.IO.Directory.CreateDirectory(Application.UserAppDataPath & "\Update\")
-
         End If
 
         Application.EnableVisualStyles()
