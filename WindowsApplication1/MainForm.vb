@@ -1,5 +1,7 @@
 ﻿Imports System.IO
 Imports System.IO.Compression
+Imports System.Net
+
 Public Class MainForm
     Public Shared xpath As String = ""
     Public Shared Multiok = 0
@@ -15,6 +17,10 @@ Public Class MainForm
     Public Shared folder = "C:\"
     Dim Sfolder = "C:\"
     Dim gog = 0
+    Dim cSVersion = "0"
+    Dim cVersion = "1.3"
+    Dim notFound = 0
+    Dim Skip = 0
 
 
     Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
@@ -43,7 +49,6 @@ Public Class MainForm
     End Function
 
     Private Sub SDVMM_Startup() Handles Me.Shown
-
         If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini")) Then
             If (Not System.IO.Directory.Exists("C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
                 If (Not System.IO.Directory.Exists("C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
@@ -94,31 +99,26 @@ Public Class MainForm
                 INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVNN.ini")
                 INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVNN.ini")
             End If
+            INI_WriteValueToFile("SMAPI Details", "Version", "SMAPI_0.37.1A", Application.UserAppDataPath & "\SDVNN.ini")
         Else
             folder = INI_ReadValueFromFile("General", "GameFolder", "C:\", Application.UserAppDataPath & "\SDVNN.ini")
             Sfolder = INI_ReadValueFromFile("General", "SteamFolder", "C:\", Application.UserAppDataPath & "\SDVNN.ini")
             gog = INI_ReadValueFromFile("General", "Good Old Game Version", 0, Application.UserAppDataPath & "\SDVNN.ini")
-        End If
-        If System.IO.File.Exists(appPath & "\Update\StardewModdingAPI.exe") Then
-            If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
-                Call Update()
-            End If
-        End If
-        Dim Check = Directory.GetFiles(appPath & "\Update\", "*.zip")
-        If Check.Length = 1 Then
-            If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
-                Dim fileEntries As String() = Directory.GetFiles(appPath & "\Update\", "*.zip")
-                Dim sOnlyFileName As String
-                For Each sFileName In fileEntries
-                    sOnlyFileName = System.IO.Path.GetFileName(sFileName)
-                Next
-                zip(appPath & "\Update\" & sOnlyFileName, appPath & "\Update\", 1, True)
-            End If
+            cSVersion = INI_ReadValueFromFile("SMAPI Details", "Version", "SMAPI_0.37.1A", Application.UserAppDataPath & "\SDVNN.ini")
         End If
         If (Not System.IO.File.Exists(folder & "\StardewModdingAPI.exe")) Then
-            MsgBox("Couldnt Find SMAPI, please install it yourself or Place the unpacked Files in an Folder called Update and Start again", MsgBoxStyle.Critical)
-            Application.Exit()
+            If MsgBox("Couldnt Find SMAPI, should i install it?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                notFound = 1
+                checkSmapiUpdate()
+            Else
+                Application.Exit()
+            End If
         End If
+        If (Not skip) = 1 Then
+            checkSmapiUpdate()
+        End If
+
+        '  checkSDVMMUpdate()
         ModList.Items.Clear()
         For Each dra In diar1
             If ModList.Items.Contains(dra) = False Then
@@ -139,6 +139,8 @@ Public Class MainForm
                 ModListd.Items.Add(dra)
             End If
         Next
+        LabelSmapi.Text = "SMAPI Version: " & cSVersion
+        LabelSD.Text = "SDV Version: " & cVersion
     End Sub
 
     Private Sub INI()
@@ -388,19 +390,19 @@ Public Class MainForm
         Dim mIndex As Integer = ModList.SelectedIndex
         Dim mText = ModList.Items.Item(mIndex)
         If mIndex >= 0 Then
-            If Path.GetExtension(mText.tostring) = ".dll" Then
+            If Path.GetExtension(mText.ToString) = ".dll" Then
                 Dim spath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & mText.ToString
                 Dim tpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & mText.ToString
                 My.Computer.FileSystem.MoveFile(spath, tpath)
                 ModList.Items.Remove(mText)
                 ModListd.Items.Add(mText)
             Else
-                MsgBox("Not yet possible, sorry!",MsgBoxStyle.Information)
+                MsgBox("Not yet possible, sorry!", MsgBoxStyle.Information)
             End If
         End If
     End Sub
 
-Function GetFolderName(ByVal sDir As String) As String
+    Function GetFolderName(ByVal sDir As String) As String
         Dim sPos As Long
         Dim ePos As Long
         sPos = InStrRev(sDir, "\", 1)
@@ -413,12 +415,111 @@ Function GetFolderName(ByVal sDir As String) As String
         Dim myPos As Integer
         Dim myFolder As String
 
-        myPos = InStrRev(myPath, "\", -1, vbTextCompare)
+        myPos = InStrRev(mypath, "\", -1, vbTextCompare)
 
         If myPos > 0 Then
-            myFolder = Mid(myPath, myPos + 1)
+            myFolder = Mid(mypath, myPos + 1)
             Return myFolder
         End If
 
     End Function
+
+
+
+
+
+
+
+    Private Sub checkSmapiUpdate()
+        If System.IO.File.Exists(appPath & "\Update\StardewModdingAPI.exe") Then
+            If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
+                Call Update()
+            End If
+        End If
+
+        If IO.Directory.Exists(appPath & "\Update\") Then
+            Dim Check = Directory.GetFiles(appPath & "\Update\", "*.zip")
+            If Check.Length = 1 Then
+                If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
+                    Dim fileEntries As String() = Directory.GetFiles(appPath & "\Update\", "*.zip")
+                    Dim sOnlyFileName As String
+                    For Each sFileName In fileEntries
+                        sOnlyFileName = System.IO.Path.GetFileName(sFileName)
+                    Next
+                    zip(appPath & "\Update\" & sOnlyFileName, appPath & "\Update\", 1, True)
+                End If
+            End If
+        End If
+
+        If My.Computer.Network.IsAvailable Then
+            Dim url = "https://github.com/ClxS/SMAPI/releases"
+            If IO.File.Exists(appPath & "\Update\vcheck.txt") Then
+                IO.File.Delete(appPath & "\Update\vcheck.txt")
+            End If
+            My.Computer.Network.DownloadFile(url, appPath & "\Update\vcheck.txt")
+            Dim file = Nothing
+            Dim version = Nothing
+            Dim arr() As String = IO.File.ReadAllLines(appPath & "\Update\vcheck.txt")
+            For Each item As String In arr
+                If item.Contains("/SMAPI_") Then
+                    Dim param() As String = item.Split("/")
+                    If file = Nothing Then
+                        file = param(1) & "/" & param(2) & "/" & param(3) & "/" & param(4) & "/" & param(5) & "/" & param(6)
+                        version = param(5)
+                    End If
+                End If
+            Next
+            Dim p() As String = file.Split("zip")
+            Dim nurl = "https://github.com/" & p(0) & "zip"
+            Dim fname = Path.GetFileName(nurl)
+            Dim fnameoe As String = Path.GetFileNameWithoutExtension(nurl)
+            If (Not String.Compare(fnameoe, cSVersion)) = 0 Or notFound = 1 Then
+                If MsgBox("SMAPI Update found, do you want to Install it now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Or notFound = 1 Then
+                    Dim myWebClient As New WebClient()
+                    myWebClient.DownloadFile(nurl, fname)
+                    IO.File.Move(appPath & "\" & fname, appPath & "\Update\" & fname)
+                    INI_WriteValueToFile("SMAPI Details", "Version", fnameoe, Application.UserAppDataPath & "\SDVNN.ini")
+                    zip(appPath & "\Update\" & fname, appPath & "\Update\", 1, True)
+                    If notFound = 1 Then
+                        Skip = 1
+                        notFound = 0
+                    End If
+                End If
+            End If
+        Else
+        End If
+    End Sub
+
+    Sub checkSDVMMUpdate()
+        If My.Computer.Network.IsAvailable Then
+            Dim url = "https://github.com/Yuukiw/StardewValleyMM/releases"
+            If IO.File.Exists(appPath & "\Update\vcheck.txt") Then
+                IO.File.Delete(appPath & "\Update\vcheck.txt")
+            End If
+            My.Computer.Network.DownloadFile(url, appPath & "\Update\vcheck.txt")
+            Dim file = Nothing
+            Dim version = Nothing
+            Dim arr() As String = IO.File.ReadAllLines(appPath & "\Update\vcheck.txt")
+            For Each item As String In arr
+                If item.Contains("/SDVMM") Then
+                    Dim param() As String = item.Split("/")
+                    If file = Nothing Then
+                        version = param(5)
+                    End If
+                End If
+            Next
+            Dim p() As String = file.Split("e x e")
+            MsgBox(p(0) & " " & p(1))
+            Dim nurl = "https://github.com/yuukiw/StardewValleyMM/releases/download/" & version & "/SDVMM.exe"
+            If (Not String.Compare(version, cVersion)) = 0 Then
+                If MsgBox("SMAPI Update found, do you want to Install it now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                    Dim myWebClient As New WebClient()
+                    myWebClient.DownloadFile(nurl, "SDVMM.exe")
+                End If
+            End If
+        Else
+        End If
+    End Sub
+
+
 End Class

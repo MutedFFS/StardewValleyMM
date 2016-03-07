@@ -34,6 +34,8 @@ Partial Class MainForm
         Me.ModListd = New System.Windows.Forms.ListBox()
         Me.dModList = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.LabelSD = New System.Windows.Forms.Label()
+        Me.LabelSmapi = New System.Windows.Forms.Label()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -42,14 +44,14 @@ Partial Class MainForm
         Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
         Me.PictureBox1.Location = New System.Drawing.Point(10, 13)
         Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(720, 150)
+        Me.PictureBox1.Size = New System.Drawing.Size(720, 120)
         Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
         Me.PictureBox1.TabIndex = 2
         Me.PictureBox1.TabStop = False
         '
         'addm
         '
-        Me.addm.Location = New System.Drawing.Point(459, 292)
+        Me.addm.Location = New System.Drawing.Point(459, 257)
         Me.addm.Name = "addm"
         Me.addm.Size = New System.Drawing.Size(271, 40)
         Me.addm.TabIndex = 3
@@ -58,7 +60,7 @@ Partial Class MainForm
         '
         'LSMAPI
         '
-        Me.LSMAPI.Location = New System.Drawing.Point(459, 186)
+        Me.LSMAPI.Location = New System.Drawing.Point(459, 151)
         Me.LSMAPI.Name = "LSMAPI"
         Me.LSMAPI.Size = New System.Drawing.Size(269, 40)
         Me.LSMAPI.TabIndex = 4
@@ -67,7 +69,7 @@ Partial Class MainForm
         '
         'LSDV
         '
-        Me.LSDV.Location = New System.Drawing.Point(459, 237)
+        Me.LSDV.Location = New System.Drawing.Point(459, 202)
         Me.LSDV.Name = "LSDV"
         Me.LSDV.Size = New System.Drawing.Size(269, 40)
         Me.LSDV.TabIndex = 5
@@ -76,7 +78,7 @@ Partial Class MainForm
         '
         'dlm
         '
-        Me.dlm.Location = New System.Drawing.Point(459, 345)
+        Me.dlm.Location = New System.Drawing.Point(459, 310)
         Me.dlm.Name = "dlm"
         Me.dlm.Size = New System.Drawing.Size(271, 40)
         Me.dlm.TabIndex = 6
@@ -85,7 +87,7 @@ Partial Class MainForm
         '
         'delm
         '
-        Me.delm.Location = New System.Drawing.Point(459, 397)
+        Me.delm.Location = New System.Drawing.Point(459, 362)
         Me.delm.Name = "delm"
         Me.delm.Size = New System.Drawing.Size(269, 40)
         Me.delm.TabIndex = 7
@@ -95,7 +97,7 @@ Partial Class MainForm
         'ModList
         '
         Me.ModList.FormattingEnabled = True
-        Me.ModList.Location = New System.Drawing.Point(10, 212)
+        Me.ModList.Location = New System.Drawing.Point(10, 177)
         Me.ModList.Name = "ModList"
         Me.ModList.Size = New System.Drawing.Size(210, 225)
         Me.ModList.TabIndex = 8
@@ -104,7 +106,7 @@ Partial Class MainForm
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(160, 178)
+        Me.Label1.Location = New System.Drawing.Point(160, 143)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(99, 16)
         Me.Label1.TabIndex = 9
@@ -113,7 +115,7 @@ Partial Class MainForm
         'ModListd
         '
         Me.ModListd.FormattingEnabled = True
-        Me.ModListd.Location = New System.Drawing.Point(226, 212)
+        Me.ModListd.Location = New System.Drawing.Point(226, 177)
         Me.ModListd.Name = "ModListd"
         Me.ModListd.Size = New System.Drawing.Size(210, 225)
         Me.ModListd.TabIndex = 10
@@ -122,7 +124,7 @@ Partial Class MainForm
         '
         Me.dModList.AutoSize = True
         Me.dModList.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.dModList.Location = New System.Drawing.Point(223, 194)
+        Me.dModList.Location = New System.Drawing.Point(223, 159)
         Me.dModList.Name = "dModList"
         Me.dModList.Size = New System.Drawing.Size(108, 15)
         Me.dModList.TabIndex = 11
@@ -132,11 +134,29 @@ Partial Class MainForm
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(7, 194)
+        Me.Label3.Location = New System.Drawing.Point(7, 159)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(94, 15)
         Me.Label3.TabIndex = 12
         Me.Label3.Text = "Activated Mods"
+        '
+        'LabelSD
+        '
+        Me.LabelSD.AutoSize = True
+        Me.LabelSD.Location = New System.Drawing.Point(7, 407)
+        Me.LabelSD.Name = "LabelSD"
+        Me.LabelSD.Size = New System.Drawing.Size(106, 13)
+        Me.LabelSD.TabIndex = 15
+        Me.LabelSD.Text = "SDVMM Version Info"
+        '
+        'LabelSmapi
+        '
+        Me.LabelSmapi.AutoSize = True
+        Me.LabelSmapi.Location = New System.Drawing.Point(226, 407)
+        Me.LabelSmapi.Name = "LabelSmapi"
+        Me.LabelSmapi.Size = New System.Drawing.Size(99, 13)
+        Me.LabelSmapi.TabIndex = 16
+        Me.LabelSmapi.Text = "SMAPI Version Info"
         '
         'MainForm
         '
@@ -145,7 +165,9 @@ Partial Class MainForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(740, 466)
+        Me.ClientSize = New System.Drawing.Size(740, 429)
+        Me.Controls.Add(Me.LabelSmapi)
+        Me.Controls.Add(Me.LabelSD)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.dModList)
         Me.Controls.Add(Me.ModListd)
@@ -161,7 +183,7 @@ Partial Class MainForm
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MinimumSize = New System.Drawing.Size(500, 400)
         Me.Name = "MainForm"
-        Me.Text = "SDVMM V1.2a"
+        Me.Text = "SDVMM V1.3"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -178,5 +200,7 @@ Partial Class MainForm
     Friend WithEvents ModListd As System.Windows.Forms.ListBox
     Friend WithEvents dModList As System.Windows.Forms.Label
     Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents LabelSD As System.Windows.Forms.Label
+    Friend WithEvents LabelSmapi As System.Windows.Forms.Label
 
 End Class
