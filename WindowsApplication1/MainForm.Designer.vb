@@ -36,6 +36,8 @@ Partial Class MainForm
         Me.Label3 = New System.Windows.Forms.Label()
         Me.LabelSD = New System.Windows.Forms.Label()
         Me.LabelSmapi = New System.Windows.Forms.Label()
+        Me.ASM = New System.Windows.Forms.Button()
+        Me.LStorm = New System.Windows.Forms.Button()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -53,16 +55,16 @@ Partial Class MainForm
         '
         Me.addm.Location = New System.Drawing.Point(459, 257)
         Me.addm.Name = "addm"
-        Me.addm.Size = New System.Drawing.Size(271, 40)
+        Me.addm.Size = New System.Drawing.Size(130, 40)
         Me.addm.TabIndex = 3
-        Me.addm.Text = "Add Mod"
+        Me.addm.Text = "Add  SMAPI/XNB Mod"
         Me.addm.UseVisualStyleBackColor = True
         '
         'LSMAPI
         '
         Me.LSMAPI.Location = New System.Drawing.Point(459, 151)
         Me.LSMAPI.Name = "LSMAPI"
-        Me.LSMAPI.Size = New System.Drawing.Size(269, 40)
+        Me.LSMAPI.Size = New System.Drawing.Size(130, 40)
         Me.LSMAPI.TabIndex = 4
         Me.LSMAPI.Text = "Launch SMAPI"
         Me.LSMAPI.UseVisualStyleBackColor = True
@@ -158,6 +160,24 @@ Partial Class MainForm
         Me.LabelSmapi.TabIndex = 16
         Me.LabelSmapi.Text = "SMAPI Version Info"
         '
+        'ASM
+        '
+        Me.ASM.Location = New System.Drawing.Point(600, 257)
+        Me.ASM.Name = "ASM"
+        Me.ASM.Size = New System.Drawing.Size(130, 40)
+        Me.ASM.TabIndex = 17
+        Me.ASM.Text = "Add Storm Mod"
+        Me.ASM.UseVisualStyleBackColor = True
+        '
+        'LStorm
+        '
+        Me.LStorm.Location = New System.Drawing.Point(600, 151)
+        Me.LStorm.Name = "LStorm"
+        Me.LStorm.Size = New System.Drawing.Size(130, 40)
+        Me.LStorm.TabIndex = 18
+        Me.LStorm.Text = "Launch Storm"
+        Me.LStorm.UseVisualStyleBackColor = True
+        '
         'MainForm
         '
         Me.AccessibleName = "FoundMods"
@@ -165,7 +185,9 @@ Partial Class MainForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(740, 429)
+        Me.ClientSize = New System.Drawing.Size(739, 429)
+        Me.Controls.Add(Me.LStorm)
+        Me.Controls.Add(Me.ASM)
         Me.Controls.Add(Me.LabelSmapi)
         Me.Controls.Add(Me.LabelSD)
         Me.Controls.Add(Me.Label3)
@@ -183,7 +205,7 @@ Partial Class MainForm
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MinimumSize = New System.Drawing.Size(500, 400)
         Me.Name = "MainForm"
-        Me.Text = "SDVMM V1.3"
+        Me.Text = "SDVMM V1.4"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -202,5 +224,7 @@ Partial Class MainForm
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents LabelSD As System.Windows.Forms.Label
     Friend WithEvents LabelSmapi As System.Windows.Forms.Label
+    Friend WithEvents ASM As System.Windows.Forms.Button
+    Friend WithEvents LStorm As System.Windows.Forms.Button
 
 End Class
