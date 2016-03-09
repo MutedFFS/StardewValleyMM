@@ -354,7 +354,7 @@ Public Class MainForm
         Dim openFileDialog1 As New OpenFileDialog()
         Dim ddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
         openFileDialog1.InitialDirectory = "c:\"
-        openFileDialog1.Filter = "SMAPI Mod files (*.dll)|*.dll|XNB Mods (*.XNB)|*.xnb"
+        openFileDialog1.Filter = "SMAPI Mod files (*.dll)|*.dll|XNB Mods (*.XNB)|*.xnb|SMAPI MOD Ini(*.ini)|*.ini|All|*.*"
         openFileDialog1.FilterIndex = 2
         openFileDialog1.Title = "Select SMAPI-Mod"
         openFileDialog1.RestoreDirectory = True
