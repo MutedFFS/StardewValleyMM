@@ -18,7 +18,7 @@ Public Class MainForm
     Dim Sfolder = "C:\"
     Dim gog = 0
     Dim cSVersion = "0"
-    Dim cVersion = "1.4"
+    Dim cVersion = "1.4a"
     Dim notFound = 0
     Dim Skip = 0
 
@@ -618,4 +618,7 @@ Public Class MainForm
         End If
     End Sub
 
+    Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
 End Class
