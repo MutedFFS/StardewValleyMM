@@ -21,6 +21,7 @@ Public Class MainForm
     Dim cVersion = "1.4a"
     Dim notFound = 0
     Dim Skip = 0
+    Dim errorlv = 0
 
 
     Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
@@ -69,20 +70,30 @@ Public Class MainForm
     End Function
 
     Function Update()
-        For Each foundFile As String In My.Computer.FileSystem.GetFiles(appPath & "\Update\", Microsoft.VisualBasic.FileIO.SearchOption.SearchAllSubDirectories, "*.*")
-            Dim foundFileInfo As New System.IO.FileInfo(foundFile)
-            Dim ext = Path.GetExtension(foundFile)
-            If ext = ".dll" Then
-                My.Computer.FileSystem.MoveFile(foundFile, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & foundFileInfo.Name, True)
-            Else
-                My.Computer.FileSystem.MoveFile(foundFile, folder & "\" & foundFileInfo.Name, True)
-            End If
-        Next
-        System.IO.Directory.Delete(appPath & "\Update\", True)
-        System.IO.Directory.CreateDirectory(appPath & "\Update\")
-        While (Not System.IO.Directory.Exists(appPath & "\Update\"))
+        Try
+            For Each foundFile As String In My.Computer.FileSystem.GetFiles(appPath & "\Update\", Microsoft.VisualBasic.FileIO.SearchOption.SearchAllSubDirectories, "*.*")
+                Dim foundFileInfo As New System.IO.FileInfo(foundFile)
+                Dim ext = Path.GetExtension(foundFile)
+                If ext = ".dll" Then
+                    errorlv = 1
+                    My.Computer.FileSystem.MoveFile(foundFile, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & foundFileInfo.Name, True)
+                Else
+                    errorlv = 2
+                    My.Computer.FileSystem.MoveFile(foundFile, folder & "\" & foundFileInfo.Name, True)
+                End If
+            Next
+            errorlv = 3
+            System.IO.Directory.Delete(appPath & "\Update\", True)
+            errorlv = 4
             System.IO.Directory.CreateDirectory(appPath & "\Update\")
-        End While
+            errorlv = 5
+            While (Not System.IO.Directory.Exists(appPath & "\Update\"))
+                errorlv = 6
+                System.IO.Directory.CreateDirectory(appPath & "\Update\")
+            End While
+        Catch Ex As Exception
+            MessageBox.Show("Cannot read file from disk! Errorlevel: " & errorlv)
+        End Try
     End Function
 
     Function installXNB()
@@ -154,39 +165,8 @@ Public Class MainForm
 
     Function INI()
         MsgBox("Sorry, i couldnt detect you Installations Path. But no worry we can fix this! Just answer the follwoing Prompts.", MsgBoxStyle.OkOnly, "Huston we have an Problem!")
-        If MsgBox("Do you own the GoG (God old Games) Version?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
-            gog = 1
-            folder = InputBox("Pease Input the Full Path of you StardewValley installation", "Nearly Done!", "Example: C:\games\StardewValley")
-            While (Not System.IO.Directory.Exists(folder))
-                folder = InputBox("Couldnt not find th Path, Please Try again", "Nearly Done!", "Example: C:\games\StardewValley")
-            End While
-        Else
-            Sfolder = InputBox("Please Input the  Path to your Steam Folder", "Nearly Done!", "Example: C:\Program Files (x86)\Steam")
-            While (Not System.IO.Directory.Exists(Sfolder))
-                Sfolder = InputBox("Couldnt find the Path, Please try again", "Nearly Done!", "Example: C:\Program Files (x86)\Steam")
-            End While
-            If (Not System.IO.Directory.Exists(Sfolder & "steamapps\common\Stardew Valley")) Then
-                folder = InputBox("Pease Input the  Path to your Stardew Valley Folder", "Nearly Done!", "Example: C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")
-                While (Not System.IO.Directory.Exists(folder))
-                    folder = InputBox("Couldnt not find th Path, Please Try again", "Nearly Done!", "Example: C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")
-                End While
-            Else
-                folder = Sfolder & "steamapps\common\Stardew Valley"
-            End If
-            If (Not System.IO.Directory.Exists(Sfolder & "\steamapps\common\Stardew Valley\Stardew Valley.exe")) Then
-                folder = InputBox("Pease Input the  Path to your Stardew Valley Folder", "Nearly Done!", "Example: C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")
-                If (Not System.IO.Directory.Exists(folder)) Then
-                    folder = InputBox("Couldnt not find th Path, Please Try again", "Nearly Done!", "Example: C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")
-                Else
-                End If
-            Else
-                folder = Sfolder & "steamapps\common\Stardew Valley"
-            End If
-
-        End If
-        INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath & "\SDVNN.ini")
-        INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVNN.ini")
-        INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVNN.ini")
+        Dim IniF As New INIForm
+        IniF.ShowDialog()
     End Function
 
     Function zip(zPath As String, dPath As String, mode As Integer, up As Boolean)
@@ -332,20 +312,38 @@ Public Class MainForm
     End Sub
 
     Private Sub LSMAPI_Click(sender As Object, e As EventArgs) Handles LSMAPI.Click
-        Shell("cmd.exe /c" + "cd /d " & folder & "& call " + """" & folder & "\StardewModdingAPI.exe" & """")
+        Try
+            Shell("cmd.exe /c" + "cd /d " & folder & "& call " + """" & folder & "\StardewModdingAPI.exe" & """")
+        Catch ex As Exception
+            MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & folder)
+        End Try
     End Sub
 
     Private Sub LStorm_Click(sender As Object, e As EventArgs) Handles LStorm.Click
-        Shell("cmd.exe /c" + "cd /d " & folder & "& call " + """" & folder & "\StormLoader.exe" & """")
-        Process.Start(folder & "\StormLoader.exe")
+        Try
+
+            Shell("cmd.exe /c" + "cd /d " & folder & "& call " + """" & folder & "\StormLoader.exe" & """")
+            Process.Start(folder & "\StormLoader.exe")
+        Catch ex As Exception
+            MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & folder)
+        End Try
     End Sub
 
     Private Sub LSDV_Click(sender As Object, e As EventArgs) Handles LSDV.Click
-        If gog = 1 Then
-            Process.Start(folder & "\Stardew Valley.exe")
-        Else
-            Process.Start(Sfolder & "\Steam.exe", "-applaunch 413150")
-        End If
+        Try
+            If gog = 1 Then
+                Process.Start(folder & "\Stardew Valley.exe")
+            Else
+                Process.Start(Sfolder & "\Steam.exe", "-applaunch 413150")
+            End If
+        Catch ex As Exception
+            If gog = 1 Then
+                MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & folder)
+            Else
+                MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & Sfolder)
+            End If
+        End Try
+
     End Sub
 
 
@@ -618,7 +616,18 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+ 
+
+    Private Sub Label2_Click(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim Form2 As New INIForm
+        Form2.ShowDialog()
+    End Sub
+
+    Private Sub LabelSD_Click(sender As Object, e As EventArgs) Handles LabelSD.Click
 
     End Sub
 End Class

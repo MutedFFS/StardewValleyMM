@@ -38,6 +38,7 @@ Partial Class MainForm
         Me.LabelSmapi = New System.Windows.Forms.Label()
         Me.ASM = New System.Windows.Forms.Button()
         Me.LStorm = New System.Windows.Forms.Button()
+        Me.Button1 = New System.Windows.Forms.Button()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -71,9 +72,9 @@ Partial Class MainForm
         '
         'LSDV
         '
-        Me.LSDV.Location = New System.Drawing.Point(459, 202)
+        Me.LSDV.Location = New System.Drawing.Point(459, 205)
         Me.LSDV.Name = "LSDV"
-        Me.LSDV.Size = New System.Drawing.Size(269, 40)
+        Me.LSDV.Size = New System.Drawing.Size(271, 40)
         Me.LSDV.TabIndex = 5
         Me.LSDV.Text = "Launch Stardew Valley"
         Me.LSDV.UseVisualStyleBackColor = True
@@ -91,7 +92,7 @@ Partial Class MainForm
         '
         Me.delm.Location = New System.Drawing.Point(459, 362)
         Me.delm.Name = "delm"
-        Me.delm.Size = New System.Drawing.Size(269, 40)
+        Me.delm.Size = New System.Drawing.Size(271, 40)
         Me.delm.TabIndex = 7
         Me.delm.Text = "Delete Mods"
         Me.delm.UseVisualStyleBackColor = True
@@ -145,7 +146,7 @@ Partial Class MainForm
         'LabelSD
         '
         Me.LabelSD.AutoSize = True
-        Me.LabelSD.Location = New System.Drawing.Point(7, 407)
+        Me.LabelSD.Location = New System.Drawing.Point(12, 411)
         Me.LabelSD.Name = "LabelSD"
         Me.LabelSD.Size = New System.Drawing.Size(106, 13)
         Me.LabelSD.TabIndex = 15
@@ -154,7 +155,7 @@ Partial Class MainForm
         'LabelSmapi
         '
         Me.LabelSmapi.AutoSize = True
-        Me.LabelSmapi.Location = New System.Drawing.Point(226, 407)
+        Me.LabelSmapi.Location = New System.Drawing.Point(232, 411)
         Me.LabelSmapi.Name = "LabelSmapi"
         Me.LabelSmapi.Size = New System.Drawing.Size(99, 13)
         Me.LabelSmapi.TabIndex = 16
@@ -178,6 +179,15 @@ Partial Class MainForm
         Me.LStorm.Text = "Launch Storm"
         Me.LStorm.UseVisualStyleBackColor = True
         '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(652, 406)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 22)
+        Me.Button1.TabIndex = 19
+        Me.Button1.Text = "Settings"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
         'MainForm
         '
         Me.AccessibleName = "FoundMods"
@@ -186,6 +196,7 @@ Partial Class MainForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(739, 429)
+        Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.LStorm)
         Me.Controls.Add(Me.ASM)
         Me.Controls.Add(Me.LabelSmapi)
@@ -226,5 +237,6 @@ Partial Class MainForm
     Friend WithEvents LabelSmapi As System.Windows.Forms.Label
     Friend WithEvents ASM As System.Windows.Forms.Button
     Friend WithEvents LStorm As System.Windows.Forms.Button
+    Friend WithEvents Button1 As System.Windows.Forms.Button
 
 End Class

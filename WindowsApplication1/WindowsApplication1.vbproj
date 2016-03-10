@@ -85,6 +85,12 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="INIForm.Designer.vb">
+      <DependentUpon>INIForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="INIForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MyListItem.vb" />
     <Compile Include="XNBForm.Designer.vb">
       <DependentUpon>XNBForm.vb</DependentUpon>
@@ -92,7 +98,9 @@
     <Compile Include="XNBForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.vb" />
+    <Compile Include="MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
@@ -115,6 +123,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="INIForm.resx">
+      <DependentUpon>INIForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="XNBForm.resx">
       <DependentUpon>XNBForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -129,6 +140,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>

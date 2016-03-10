@@ -1,4 +1,6 @@
-﻿Public Class MyListItem
+﻿
+
+Public Class MyListItem
     Private mText As String
     Private mValue As String
 
