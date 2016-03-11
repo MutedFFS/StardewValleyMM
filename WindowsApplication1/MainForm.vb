@@ -18,7 +18,7 @@ Public Class MainForm
     Dim Sfolder = "C:\"
     Dim gog = 0
     Dim cSVersion = "0"
-    Dim cVersion = "1.4a"
+    Dim cVersion = "1.4b"
     Dim notFound = 0
     Dim Skip = 0
     Dim errorlv = 0
@@ -107,14 +107,14 @@ Public Class MainForm
         Dim name = shPath(XNBForm.XtFolder) & "-" & Fname
         My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
         IO.File.Copy(xpath, xtpath)
-        INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\SDVNN.ini")
+        INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\SDVMM.ini")
         If ModList.Items.Contains(name) = False Then
             ModList.Items.Add(name)
         End If
     End Function
 
     Function deleteXNB(name As String)
-        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVNN.ini")
+        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini")
         For Each item As String In arr
             If item.Contains("=") Then
                 If item.Contains("Content") Then
@@ -122,7 +122,7 @@ Public Class MainForm
                         Dim param() As String = item.Split("="c)
                         'MsgBox(param(0)) 'output the name
                         My.Computer.FileSystem.MoveFile(appPath & "\Backup\" & param(0), param(1), True)
-                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\SDVNN.ini")
+                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
                         ModList.Items.Remove(param(0))
                     End If
 
@@ -186,92 +186,87 @@ Public Class MainForm
 
     'Launch Sub
     Private Sub SDVMM_Startup() Handles Me.Shown
-        If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini")) Then
-            If (Not System.IO.Directory.Exists("C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
-                If (Not System.IO.Directory.Exists("C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
-                    If (Not System.IO.Directory.Exists("E:\Program Files (x86)\Steam\steamapps\common\Stardew Valley")) Then
-                        If (Not System.IO.Directory.Exists("C:\Games\Stardew Valley")) Then
-                            If (Not System.IO.Directory.Exists("D:\Games\Stardew Valley")) Then
-                                If (Not System.IO.Directory.Exists("E:\Games\Stardew Valley")) Then
-                                    INI()
-                                Else
-                                    folder = "E:\Games\Stardew Valley"
-                                    gog = 1
-                                    INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath & "\SDVNN.ini")
-                                    INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVNN.ini")
-                                    INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVNN.ini")
-                                End If
-                            Else
-                                folder = "D:\Games\Stardew Valley"
-                                gog = 1
-                                INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath & "\SDVNN.ini")
-                                INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVNN.ini")
-                                INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVNN.ini")
-                            End If
-                        Else
-                            folder = "C:\Games\Stardew Valley"
-                            gog = 1
-                            INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath & "\SDVNN.ini")
-                            INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVNN.ini")
-                            INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVNN.ini")
-                        End If
-                    Else
-                        folder = "E:\Program Files (x86)\Steam\steamapps\common\Stardew Valley"
-                        Sfolder = "E:\Program Files (x86)\Steam"
-                        INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath & "\SDVNN.ini")
-                        INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVNN.ini")
-                        INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVNN.ini")
+        'fixing name error
+        If System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini") Then
+            FileSystem.Rename(Application.UserAppDataPath & "\SDVNN.ini", Application.UserAppDataPath & "\SDVMM.ini")
+        End If
+        'does the ini file exist?
+        If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVMM.ini")) Then
+            Dim spath As String = "Program Files (x86)\Steam\steamapps\common\Stardew Valley"
+            Dim sspath As String = "Program Files (x86)\Steam\"
+            Dim gpath As String = "Games\Stardew Valley"
+            Dim allDrives() As DriveInfo = DriveInfo.GetDrives()
+            Dim Folder1 As String = ""
+            Dim Folder2 As String = ""
+            Dim Drives As DriveInfo
+            Dim succses As Boolean = False
+
+            'get all driveletter
+            For Each Drives In allDrives
+                'if drive = HDD
+                If Drives.DriveType = 3 Then
+                    Folder1 = Drives.Name & spath
+                    Folder2 = Drives.Name & gpath
+                    'does a the steam version of Stardew Valley exist on the drive
+                    If System.IO.Directory.Exists(Folder1) Then
+                        'if yes then:
+                        gog = 0 'its not the gog version
+                        Sfolder = sspath 'changing the variables to not have to read them out again
+                        folder = Folder1 '^
+                        INI_WriteValueToFile("General", "GameFolder", Folder1, Application.UserAppDataPath & "\SDVMM.ini") 'writing variables to the ini
+                        INI_WriteValueToFile("General", "SteamFolder", Drives.Name & sspath, Application.UserAppDataPath & "\SDVMM.ini") '^
+                        INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVMM.ini") '^
+                        succses = True 'tell the if routine that a file i found
+                        Exit For 'exit for loop
+                    ElseIf System.IO.Directory.Exists(Folder2) Then
+                        gog = 1 'same as above just the GoG variant
+                        folder = Folder2
+                        INI_WriteValueToFile("General", "GameFolder", Folder2, Application.UserAppDataPath & "\SDVMM.ini")
+                        INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVMM.ini")
+                        succses = True   'tell the if routine that a file i found
+                        Exit For 'exit for loop
                     End If
-                Else
-                    folder = "D:\Program Files (x86)\Steam\steamapps\common\Stardew Valley"
-                    Sfolder = "D:\Program Files (x86)\Steam"
-                    INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath & "\SDVNN.ini")
-                    INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVNN.ini")
-                    INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVNN.ini")
                 End If
-            Else
-                folder = "C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley"
-                Sfolder = "C:\Program Files (x86)\Steam"
-                INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath & "\SDVNN.ini")
-                INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVNN.ini")
-                INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVNN.ini")
+            Next
+            'if the algorithmn couldnt find the file then call the ini
+            If succses = False Then
+                INI()
             End If
-            INI_WriteValueToFile("SMAPI Details", "Version", "SMAPI_0.37.1A", Application.UserAppDataPath & "\SDVNN.ini")
-        Else
-            folder = INI_ReadValueFromFile("General", "GameFolder", "C:\", Application.UserAppDataPath & "\SDVNN.ini")
-            Sfolder = INI_ReadValueFromFile("General", "SteamFolder", "C:\", Application.UserAppDataPath & "\SDVNN.ini")
-            gog = INI_ReadValueFromFile("General", "Good Old Game Version", 0, Application.UserAppDataPath & "\SDVNN.ini")
-            cSVersion = INI_ReadValueFromFile("SMAPI Details", "Version", "SMAPI_0.37.1A", Application.UserAppDataPath & "\SDVNN.ini")
+        Else 'if the ini exist then just read out all need variables
+            folder = INI_ReadValueFromFile("General", "GameFolder", "C:\", Application.UserAppDataPath & "\SDVMM.ini")
+            Sfolder = INI_ReadValueFromFile("General", "SteamFolder", "C:\", Application.UserAppDataPath & "\SDVMM.ini")
+            gog = INI_ReadValueFromFile("General", "Good Old Game Version", 0, Application.UserAppDataPath & "\SDVMM.ini")
+            cSVersion = INI_ReadValueFromFile("SMAPI Details", "Version", "SMAPI_0.37.1A", Application.UserAppDataPath & "\SDVMM.ini")
         End If
-        If (Not System.IO.File.Exists(folder & "\StardewModdingAPI.exe")) Then
-            If MsgBox("Couldnt Find SMAPI, should i install it?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
-                notFound = 1
-                checkSmapiUpdate()
-            Else
-                LSMAPI.Enabled = False
+        If (Not System.IO.File.Exists(folder & "\StardewModdingAPI.exe")) Then 'does smapi exist? if no:
+            If MsgBox("Couldnt Find SMAPI, should i install it?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then 'ask the user if he would like to install it.If yes:
+                notFound = 1 'change variable to tell the subroutine that it can just install the update even if the a version number exist
+                checkSmapiUpdate() 'call sub routine
+            Else 'if no
+                LSMAPI.Enabled = False 'deactivate the button
             End If
         End If
-        If Skip = 0 Then
+        If Skip = 0 Then 'this is only 1 if the subroutine was run with the parameter not found = 1, this is to tell the programm that it doenst need to check twice
             checkSmapiUpdate()
         End If
-        If (Not System.IO.File.Exists(folder & "\StormLoader.exe")) Then
+        If (Not System.IO.File.Exists(folder & "\StormLoader.exe")) Then 'same as with smapi. not implemented since it isnt Storm isnt really useable for the normal user imo. But it will detect it
             ' If MsgBox("Couldnt Find SMAPI, should i install it?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
             'notFound = 1
             'checkSmapiUpdate()
             'Else
             '  LSMAPI.Enabled = False
             'End If
-            LStorm.Enabled = False
+            LStorm.Enabled = False 'if not  disable the button
         End If
-
-        '  checkSDVMMUpdate()
-        ModList.Items.Clear()
-        For Each dra In diar1
-            If ModList.Items.Contains(dra) = False Then
+        '  checkSDVMMUpdate() ' here he should check for an update of the mod manager but not yet implemented
+        ModList.Items.Clear() ' clea the modlists. While they should be empty anyways i still want to be sure
+        ModListd.Items.Clear()
+        For Each dra In diar1 ' reads all smapi dlls.
+            If ModList.Items.Contains(dra) = False Then 'check to defend against double entries
                 ModList.Items.Add(dra)
             End If
         Next
-        Dim arr2() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVNN.ini")
+        Dim arr2() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all storm mods
         For Each item As String In arr2
             If item.Contains("=") Then
                 If item.Contains(".storm") Then
@@ -285,7 +280,7 @@ Public Class MainForm
                 End If
             End If
         Next
-        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVNN.ini")
+        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all XNB Mods
         For Each item As String In arr
             If item.Contains("=") Then
                 If item.Contains("Content") Then
@@ -294,7 +289,7 @@ Public Class MainForm
                 End If
             End If
         Next
-        For Each dra In diar2
+        For Each dra In diar2 ' reads all deactivated mods
             If ModListd.Items.Contains(dra) = False Then
                 ModListd.Items.Add(dra)
             End If
@@ -425,7 +420,7 @@ Public Class MainForm
                     If ModList.Items.Contains(Path.GetFileName(addname)) = False Then
                         ModList.Items.Add(Path.GetFileName(addname))
                     End If
-                    INI_WriteValueToFile("Storm", addname, fname, Application.UserAppDataPath & "\SDVNN.ini")
+                    INI_WriteValueToFile("Storm", addname, fname, Application.UserAppDataPath & "\SDVMM.ini")
                 End If
 
             Catch Ex As Exception
@@ -485,12 +480,12 @@ Public Class MainForm
                             Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & split(0) & "\"
                             System.IO.Directory.Delete(deldir, True)
                             ModList.Items.Remove(mText)
-                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\SDVNN.ini")
+                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
                         Else
                             Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & split(0) & "\"
                             System.IO.Directory.Delete(deldir, True)
                             ModListd.Items.Remove(mText)
-                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\SDVNN.ini")
+                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
                         End If
                     Else
                         deleteXNB(mText)
@@ -604,7 +599,7 @@ Public Class MainForm
                     Dim myWebClient As New WebClient()
                     myWebClient.DownloadFile(nurl, fname)
                     IO.File.Move(appPath & "\" & fname, appPath & "\Update\" & fname)
-                    INI_WriteValueToFile("SMAPI Details", "Version", fnameoe, Application.UserAppDataPath & "\SDVNN.ini")
+                    INI_WriteValueToFile("SMAPI Details", "Version", fnameoe, Application.UserAppDataPath & "\SDVMM.ini")
                     zip(appPath & "\Update\" & fname, appPath & "\Update\", 1, True)
                     If notFound = 1 Then
                         Skip = 1
