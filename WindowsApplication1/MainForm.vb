@@ -285,7 +285,12 @@ Public Class MainForm
             If item.Contains("=") Then
                 If item.Contains("Content") Then
                     Dim param() As String = item.Split("="c)
-                    ModList.Items.Add(param(0))
+                    If IO.File.Exists(appPath & "\Backup\" & param(0)) Then
+                        ModList.Items.Add(param(0))
+                    Else
+                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                    End If
+
                 End If
             End If
         Next
