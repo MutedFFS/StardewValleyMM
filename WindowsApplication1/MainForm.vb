@@ -18,7 +18,7 @@ Public Class MainForm
     Dim Sfolder = "C:\"
     Dim gog = 0
     Dim cSVersion = "0"
-    Dim cVersion = "1.4b"
+    Dim cVersion = "1.4e"
     Dim notFound = 0
     Dim Skip = 0
     Dim errorlv = 0
@@ -187,9 +187,10 @@ Public Class MainForm
     'Launch Sub
     Private Sub SDVMM_Startup() Handles Me.Shown
         'fixing name error
-        If System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini") Then
-            FileSystem.Rename(Application.UserAppDataPath & "\SDVNN.ini", Application.UserAppDataPath & "\SDVMM.ini")
-        End If
+        While System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini")
+            My.Computer.FileSystem.MoveFile(Application.UserAppDataPath & "\SDVNN.ini", Application.UserAppDataPath & "\SDVMM.ini", True)
+        End While
+
         'does the ini file exist?
         If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVMM.ini")) Then
             Dim spath As String = "Program Files (x86)\Steam\steamapps\common\Stardew Valley"
@@ -372,9 +373,12 @@ Public Class MainForm
                             xpath = s
                             installXNB()
                         Else
-                            IO.File.Copy(s, tdir)
+                            IO.File.Copy(s, tdir, True)
                             If ModList.Items.Contains(Path.GetFileName(s)) = False Then
-                                ModList.Items.Add(Path.GetFileName(s))
+                                If Path.GetExtension(Path.GetExtension(s)) = ".ini" Then
+                                Else
+                                    ModList.Items.Add(Path.GetFileName(s))
+                                End If
                             End If
                         End If
                     Next
@@ -520,7 +524,7 @@ Public Class MainForm
             Else
                 Dim spath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & mText.ToString
                 Dim tpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & mText.ToString
-                My.Computer.FileSystem.MoveFile(spath, tpath)
+                My.Computer.FileSystem.MoveFile(spath, tpath, True)
                 ModListd.Items.Remove(mText)
                 ModList.Items.Add(mText)
             End If
