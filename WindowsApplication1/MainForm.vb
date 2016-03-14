@@ -134,31 +134,36 @@ Public Class MainForm
 
     Function checkSDVMMUpdate()
         If My.Computer.Network.IsAvailable Then
-            Dim url = "https://github.com/Yuukiw/StardewValleyMM/releases"
-            If IO.File.Exists(appPath & "\Update\vcheck.txt") Then
-                IO.File.Delete(appPath & "\Update\vcheck.txt")
-            End If
-            My.Computer.Network.DownloadFile(url, appPath & "\Update\vcheck.txt")
-            Dim file = Nothing
-            Dim version = Nothing
-            Dim arr() As String = IO.File.ReadAllLines(appPath & "\Update\vcheck.txt")
-            For Each item As String In arr
-                If item.Contains("/SDVMM") Then
-                    Dim param() As String = item.Split("/")
-                    If file = Nothing Then
-                        version = param(5)
+            Try
+                Dim url = "https://github.com/Yuukiw/StardewValleyMM/releases"
+                If IO.File.Exists(appPath & "\Update\vcheck.txt") Then
+                    IO.File.Delete(appPath & "\Update\vcheck.txt")
+                End If
+                My.Computer.Network.DownloadFile(url, appPath & "\Update\vcheck.txt")
+                Dim file = Nothing
+                Dim version = Nothing
+                Dim arr() As String = IO.File.ReadAllLines(appPath & "\Update\vcheck.txt")
+                For Each item As String In arr
+                    If item.Contains("/SDVMM") Then
+                        Dim param() As String = item.Split("/")
+                        If file = Nothing Then
+                            version = param(5)
+                        End If
+                    End If
+                Next
+                Dim p() As String = file.Split("e x e")
+                MsgBox(p(0) & " " & p(1))
+                Dim nurl = "https://github.com/yuukiw/StardewValleyMM/releases/download/" & version & "/SDVMM.exe"
+                If (Not String.Compare(version, cVersion)) = 0 Then
+                    If MsgBox("SMAPI Update found, do you want to Install it now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                        Dim myWebClient As New WebClient()
+                        myWebClient.DownloadFile(nurl, "SDVMM.exe")
                     End If
                 End If
-            Next
-            Dim p() As String = file.Split("e x e")
-            MsgBox(p(0) & " " & p(1))
-            Dim nurl = "https://github.com/yuukiw/StardewValleyMM/releases/download/" & version & "/SDVMM.exe"
-            If (Not String.Compare(version, cVersion)) = 0 Then
-                If MsgBox("SMAPI Update found, do you want to Install it now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
-                    Dim myWebClient As New WebClient()
-                    myWebClient.DownloadFile(nurl, "SDVMM.exe")
-                End If
-            End If
+            Catch ex As Exception
+                MsgBox("Not able to connect to the Internet.")
+            End Try
+
         Else
         End If
     End Function
