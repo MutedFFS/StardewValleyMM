@@ -97,7 +97,7 @@ Public Class INIForm
                     TextSFolder.Text = Sfolder
                 End If
             Catch Ex As Exception
-                MessageBox.Show("Cannot read file from disk!")
+                MessageBox.Show("Cannot read file from disk! Please restart SDVMM and try again.")
             Finally
                 ' Check this again, since we need to make sure we didn't throw an exception on open.
                 If (myStream IsNot Nothing) Then
@@ -123,7 +123,7 @@ Public Class INIForm
                     TextGfolder.Text = folder
                 End If
             Catch Ex As Exception
-                MessageBox.Show("Cannot read file from disk!")
+                MessageBox.Show("Cannot read file from disk! Please restart SDVMM and try again.")
             Finally
                 ' Check this again, since we need to make sure we didn't throw an exception on open.
                 If (myStream IsNot Nothing) Then

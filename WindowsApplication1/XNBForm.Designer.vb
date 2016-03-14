@@ -33,7 +33,7 @@ Partial Class XNBForm
         '
         Me.CoBo.DisplayMember = "1"
         Me.CoBo.FormattingEnabled = True
-        Me.CoBo.Location = New System.Drawing.Point(22, 50)
+        Me.CoBo.Location = New System.Drawing.Point(22, 35)
         Me.CoBo.Name = "CoBo"
         Me.CoBo.Size = New System.Drawing.Size(261, 21)
         Me.CoBo.TabIndex = 0
@@ -42,7 +42,7 @@ Partial Class XNBForm
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(22, 31)
+        Me.Label1.Location = New System.Drawing.Point(22, 16)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(261, 13)
         Me.Label1.TabIndex = 1
@@ -50,7 +50,7 @@ Partial Class XNBForm
         '
         'OK
         '
-        Me.OK.Location = New System.Drawing.Point(22, 97)
+        Me.OK.Location = New System.Drawing.Point(22, 87)
         Me.OK.Name = "OK"
         Me.OK.Size = New System.Drawing.Size(125, 23)
         Me.OK.TabIndex = 2
@@ -59,7 +59,7 @@ Partial Class XNBForm
         '
         'Cancel
         '
-        Me.Cancel.Location = New System.Drawing.Point(158, 97)
+        Me.Cancel.Location = New System.Drawing.Point(158, 87)
         Me.Cancel.Name = "Cancel"
         Me.Cancel.Size = New System.Drawing.Size(125, 23)
         Me.Cancel.TabIndex = 3
@@ -69,7 +69,7 @@ Partial Class XNBForm
         'CheckBox1
         '
         Me.CheckBox1.AutoSize = True
-        Me.CheckBox1.Location = New System.Drawing.Point(22, 78)
+        Me.CheckBox1.Location = New System.Drawing.Point(13, 63)
         Me.CheckBox1.Name = "CheckBox1"
         Me.CheckBox1.Size = New System.Drawing.Size(285, 17)
         Me.CheckBox1.TabIndex = 4
@@ -80,14 +80,15 @@ Partial Class XNBForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(309, 145)
+        Me.ClientSize = New System.Drawing.Size(309, 122)
         Me.Controls.Add(Me.CheckBox1)
         Me.Controls.Add(Me.Cancel)
         Me.Controls.Add(Me.OK)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.CoBo)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
         Me.Name = "XNBForm"
-        Me.Text = "XNBForm"
+        Me.Text = "XNB Selection"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

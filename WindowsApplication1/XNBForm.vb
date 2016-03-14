@@ -62,7 +62,7 @@ Public Class XNBForm
             End If
             Close()
         Else
-            MsgBox("Invalid Choice try again.")
+            MsgBox("Invalid Choice, please try again.")
         End If
 
     End Sub

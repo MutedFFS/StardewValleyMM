@@ -22,6 +22,7 @@ Partial Class INIForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(INIForm))
         Me.Label1 = New System.Windows.Forms.Label()
         Me.GogLabel = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -157,8 +158,11 @@ Partial Class INIForm
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.GogLabel)
         Me.Controls.Add(Me.Label1)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "INIForm"
-        Me.Text = "Form1"
+        Me.RightToLeftLayout = True
+        Me.Text = "Settings"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

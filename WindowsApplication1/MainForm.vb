@@ -169,7 +169,7 @@ Public Class MainForm
     End Function
 
     Function INI()
-        MsgBox("Sorry, i couldnt detect you Installations Path. But no worry we can fix this! Just answer the follwoing Prompts.", MsgBoxStyle.OkOnly, "Huston we have an Problem!")
+        MsgBox("Sorry, I could not detect your Stardew Valley installation path. But no worries we can fix this! Just answer the following prompts.", MsgBoxStyle.OkOnly, "Huston we have an Problem!")
         Dim IniF As New INIForm
         IniF.ShowDialog()
     End Function
@@ -245,7 +245,7 @@ Public Class MainForm
             cSVersion = INI_ReadValueFromFile("SMAPI Details", "Version", "SMAPI_0.37.1A", Application.UserAppDataPath & "\SDVMM.ini")
         End If
         If (Not System.IO.File.Exists(folder & "\StardewModdingAPI.exe")) Then 'does smapi exist? if no:
-            If MsgBox("Couldnt Find SMAPI, should i install it?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then 'ask the user if he would like to install it.If yes:
+            If MsgBox("SMAPI does not appear to be installed, should i install it?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then 'ask the user if he would like to install it.If yes:
                 notFound = 1 'change variable to tell the subroutine that it can just install the update even if the a version number exist
                 checkSmapiUpdate() 'call sub routine
             Else 'if no
@@ -311,7 +311,7 @@ Public Class MainForm
 
 
     Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
-        Dim Result As Integer = MsgBox("The SDVMM Forumpost will be opened, are you alright with this?", MsgBoxStyle.YesNo)
+        Dim Result As Integer = MsgBox("The SDVMM forum topic will be opened in your web browser, do you wish to proceed?", MsgBoxStyle.YesNo)
         If Result = DialogResult.Yes Then
             System.Diagnostics.Process.Start("http://community.playstarbound.com/threads/fairly-simple-mod-manager-batch-based.107663/")
         End If
@@ -321,7 +321,7 @@ Public Class MainForm
         Try
             Shell("cmd.exe /c" + "cd /d " & folder & "& call " + """" & folder & "\StardewModdingAPI.exe" & """")
         Catch ex As Exception
-            MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & folder)
+            MsgBox("Could not Launch Smapi! Please check if the path is correct? Path: " & folder)
         End Try
     End Sub
 
@@ -331,7 +331,7 @@ Public Class MainForm
             Shell("cmd.exe /c" + "cd /d " & folder & "& call " + """" & folder & "\StormLoader.exe" & """")
             Process.Start(folder & "\StormLoader.exe")
         Catch ex As Exception
-            MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & folder)
+            MsgBox("Could not Launch Storm API! Please check if the path is corect? Path: " & folder)
         End Try
     End Sub
 
@@ -344,9 +344,9 @@ Public Class MainForm
             End If
         Catch ex As Exception
             If gog = 1 Then
-                MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & folder)
+                MsgBox("Could not Launch Smapi! Please check if the path is correct? Path: " & folder)
             Else
-                MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & Sfolder)
+                MsgBox("Could not Launch Smapi! Please check if the path is correct? Path: " & Sfolder)
             End If
         End Try
 
@@ -392,7 +392,7 @@ Public Class MainForm
                 End If
 
             Catch Ex As Exception
-                MessageBox.Show("Cannot read file from disk!")
+                MessageBox.Show("Cannot read file from disk! Please restart SDVMM and try again.")
             Finally
                 ' Check this again, since we need to make sure we didn't throw an exception on open.
                 If (myStream IsNot Nothing) Then
@@ -438,7 +438,7 @@ Public Class MainForm
                 End If
 
             Catch Ex As Exception
-                MessageBox.Show("Cannot read file from disk!")
+                MessageBox.Show("Cannot read file from disk! Please restart SDVMM and try again.")
             Finally
                 ' Check this again, since we need to make sure we didn't throw an exception on open.
                 If (myStream IsNot Nothing) Then
@@ -449,7 +449,7 @@ Public Class MainForm
     End Sub
 
     Private Sub dlm_Click(sender As Object, e As EventArgs) Handles dlm.Click
-        Dim Result As Integer = MsgBox("The Mod Subforum will be opened, are you alright with this?", MsgBoxStyle.YesNo)
+        Dim Result As Integer = MsgBox("The Stardew Valley Mod forum will be opened in your web browser, do you wish to proceed?", MsgBoxStyle.YesNo)
         If Result = DialogResult.Yes Then
             System.Diagnostics.Process.Start("http://community.playstarbound.com/forums/mods.215/")
         End If
@@ -462,7 +462,7 @@ Public Class MainForm
         If mIndex < 0 Then
             mIndex = ModListd.SelectedIndex
             If mIndex < 0 Then
-                MsgBox("No Mod to delete selected.", MsgBoxStyle.OkOnly, "no mod selected")
+                MsgBox("No Mod selected to delete.", MsgBoxStyle.OkOnly, "no mod selected")
                 Exit Sub
             End If
             mText = ModListd.Items(mIndex)
@@ -472,7 +472,7 @@ Public Class MainForm
         End If
         If mIndex >= 0 Then
 
-            Dim Result As Integer = MsgBox("are you sure that you want to delete: " & mText.ToString & "?", MsgBoxStyle.YesNo)
+            Dim Result As Integer = MsgBox("Are you sure that you want to delete the following mod: " & mText.ToString & "?", MsgBoxStyle.YesNo)
             If Result = DialogResult.Yes Then
                 If Path.GetExtension(mText.ToString) = ".dll" Then
                     If check = 0 Then
@@ -566,7 +566,7 @@ Public Class MainForm
 
     Private Sub checkSmapiUpdate()
         If System.IO.File.Exists(appPath & "\Update\StardewModdingAPI.exe") Then
-            If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
+            If MsgBox("SMAPI Update Available! Do you want to download the update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
                 Call Update()
             End If
         End If
@@ -574,7 +574,7 @@ Public Class MainForm
         If IO.Directory.Exists(appPath & "\Update\") Then
             Dim Check = Directory.GetFiles(appPath & "\Update\", "*.zip")
             If Check.Length = 1 Then
-                If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
+                If MsgBox("SMAPI Update Available! Do you want to download the update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
                     Dim fileEntries As String() = Directory.GetFiles(appPath & "\Update\", "*.zip")
                     Dim sOnlyFileName As String
                     For Each sFileName In fileEntries
@@ -609,7 +609,7 @@ Public Class MainForm
             Dim fnameoe As String = Path.GetFileNameWithoutExtension(nurl)
             ' If (Not String.Compare(fnameoe, cSVersion)) = 0 Or notFound = 1 Then
             If Not (fnameoe = cSVersion) Or notFound = 1 Then
-                If MsgBox("SMAPI Update found, do you want to Install it now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Or notFound = 1 Then
+                If MsgBox("SMAPI Update Available! Do you want to install the update SMAPI now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Or notFound = 1 Then
                     Dim myWebClient As New WebClient()
                     myWebClient.DownloadFile(nurl, fname)
                     IO.File.Move(appPath & "\" & fname, appPath & "\Update\" & fname)
