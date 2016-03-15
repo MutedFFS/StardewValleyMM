@@ -10,15 +10,17 @@ Public Class MainForm
     Dim appPath As String = Application.StartupPath()
     Dim smdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
     Dim dmdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
+    Dim xmdir As New IO.DirectoryInfo(appPath & "\Backup")
     Dim diar1 As IO.FileInfo() = smdir.GetFiles("*.dll")
     Dim diar2 As IO.FileInfo() = dmdir.GetFiles("*.dll")
+    Dim diar3 As IO.FileInfo() = xmdir.GetFiles("*.xnb")
     Dim dra As IO.FileInfo
     Dim check1 = 0
     Public Shared folder = "C:\"
     Dim Sfolder = "C:\"
     Dim gog = 0
     Dim cSVersion = "0"
-    Dim cVersion = "1.4e"
+    Dim cVersion = "1.4f"
     Dim notFound = 0
     Dim Skip = 0
     Dim errorlv = 0
@@ -107,7 +109,7 @@ Public Class MainForm
         Dim name = shPath(XNBForm.XtFolder) & "-" & Fname
         My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
         IO.File.Copy(xpath, xtpath)
-        INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\SDVMM.ini")
+        INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\XNB.ini")
         If ModList.Items.Contains(name) = False Then
             ModList.Items.Add(name)
         End If
@@ -122,7 +124,7 @@ Public Class MainForm
                         Dim param() As String = item.Split("="c)
                         'MsgBox(param(0)) 'output the name
                         My.Computer.FileSystem.MoveFile(appPath & "\Backup\" & param(0), param(1), True)
-                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\XNB.ini")
                         ModList.Items.Remove(param(0))
                     End If
 
@@ -195,8 +197,29 @@ Public Class MainForm
         While System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini")
             My.Computer.FileSystem.MoveFile(Application.UserAppDataPath & "\SDVNN.ini", Application.UserAppDataPath & "\SDVMM.ini", True)
         End While
-
         'does the ini file exist?
+        If (Not System.IO.File.Exists(Application.UserAppDataPath & "\XNB.ini")) Then
+            For Each dra In diar3
+                Dim value = ""
+                value = INI_ReadValueFromFile("XNB Backup paths", dra.Name, "no", Application.UserAppDataPath & "\SDVMM.ini")
+                INI_WriteValueToFile("XNB Backup Paths", dra.Name, value, Application.UserAppDataPath & "\XNB.ini")
+                INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+            Next
+            Dim arr3() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all storm mods
+            Dim v = ""
+            For Each item As String In arr3
+                If item.Contains("=") Then
+                    If item.Contains(".storm") Then
+                        Dim param() As String = item.Split("=")
+                        Dim file() As String = param(0).Split(".")
+                        INI_ReadValueFromFile("Strom", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                        INI_WriteValueToFile("Storm", param(0), file(0) & "." & file(1), Application.UserAppDataPath & "\Storm.ini")
+                        INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                    End If
+                End If
+            Next
+        End If
+
         If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVMM.ini")) Then
             Dim spath As String = "Program Files (x86)\Steam\steamapps\common\Stardew Valley"
             Dim sspath As String = "Program Files (x86)\Steam\"
@@ -272,7 +295,7 @@ Public Class MainForm
                 ModList.Items.Add(dra)
             End If
         Next
-        Dim arr2() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all storm mods
+        Dim arr2() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\Storm.ini") 'reads all storm mods
         For Each item As String In arr2
             If item.Contains("=") Then
                 If item.Contains(".storm") Then
@@ -286,19 +309,13 @@ Public Class MainForm
                 End If
             End If
         Next
-        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all XNB Mods
-        For Each item As String In arr
-            If item.Contains("=") Then
-                If item.Contains("Content") Then
-                    Dim param() As String = item.Split("="c)
-                    If IO.File.Exists(appPath & "\Backup\" & param(0)) Then
-                        ModList.Items.Add(param(0))
-                    Else
-                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
-                    End If
-
-                End If
+        For Each dra In diar3
+            If IO.File.Exists(appPath & "\Backup\" & dra.Name) Then
+                ModList.Items.Add(dra.Name)
+            Else
+                INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\XNB.ini")
             End If
+
         Next
         For Each dra In diar2 ' reads all deactivated mods
             If ModListd.Items.Contains(dra) = False Then
@@ -434,7 +451,7 @@ Public Class MainForm
                     If ModList.Items.Contains(Path.GetFileName(addname)) = False Then
                         ModList.Items.Add(Path.GetFileName(addname))
                     End If
-                    INI_WriteValueToFile("Storm", addname, fname, Application.UserAppDataPath & "\SDVMM.ini")
+                    INI_WriteValueToFile("Storm", addname, fname, Application.UserAppDataPath & "\Storm.ini")
                 End If
 
             Catch Ex As Exception
@@ -494,12 +511,12 @@ Public Class MainForm
                             Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & split(0) & "\"
                             System.IO.Directory.Delete(deldir, True)
                             ModList.Items.Remove(mText)
-                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\Storm.ini")
                         Else
                             Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & split(0) & "\"
                             System.IO.Directory.Delete(deldir, True)
                             ModListd.Items.Remove(mText)
-                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\Storm.ini")
                         End If
                     Else
                         deleteXNB(mText)
@@ -625,7 +642,7 @@ Public Class MainForm
         End If
     End Sub
 
- 
+
 
     Private Sub Label2_Click(sender As Object, e As EventArgs)
 
