@@ -629,4 +629,17 @@ Public Class MainForm
     Private Sub LabelSD_Click(sender As Object, e As EventArgs) Handles LabelSD.Click
 
     End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Dim dlform As New Download
+        dlform.ShowDialog()
+    End Sub
+
+    Private Sub ModList_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ModList.SelectedIndexChanged
+
+    End Sub
+
+    Private Sub ModListd_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ModListd.SelectedIndexChanged
+
+    End Sub
 End Class

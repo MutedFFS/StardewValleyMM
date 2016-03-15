@@ -85,6 +85,12 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Download.Designer.vb">
+      <DependentUpon>Download.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Download.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="INIForm.Designer.vb">
       <DependentUpon>INIForm.vb</DependentUpon>
     </Compile>
@@ -123,6 +129,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Download.resx">
+      <DependentUpon>Download.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="INIForm.resx">
       <DependentUpon>INIForm.vb</DependentUpon>
     </EmbeddedResource>
