@@ -10,8 +10,10 @@ Public Class MainForm
     Dim appPath As String = Application.StartupPath()
     Dim smdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
     Dim dmdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
+    Dim xmdir As New IO.DirectoryInfo(appPath & "\Backup")
     Dim diar1 As IO.FileInfo() = smdir.GetFiles("*.dll")
     Dim diar2 As IO.FileInfo() = dmdir.GetFiles("*.dll")
+    Dim diar3 As IO.FileInfo() = xmdir.GetFiles("*.xnb")
     Dim dra As IO.FileInfo
     Dim check1 = 0
     Public Shared folder = "C:\"
@@ -107,7 +109,7 @@ Public Class MainForm
         Dim name = shPath(XNBForm.XtFolder) & "-" & Fname
         My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
         IO.File.Copy(xpath, xtpath)
-        INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\SDVMM.ini")
+        INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\XNB.ini")
         If ModList.Items.Contains(name) = False Then
             ModList.Items.Add(name)
         End If
@@ -122,7 +124,7 @@ Public Class MainForm
                         Dim param() As String = item.Split("="c)
                         'MsgBox(param(0)) 'output the name
                         My.Computer.FileSystem.MoveFile(appPath & "\Backup\" & param(0), param(1), True)
-                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\XNB.ini")
                         ModList.Items.Remove(param(0))
                     End If
 
@@ -169,7 +171,7 @@ Public Class MainForm
     End Function
 
     Function INI()
-        MsgBox("Sorry, i couldnt detect you Installations Path. But no worry we can fix this! Just answer the follwoing Prompts.", MsgBoxStyle.OkOnly, "Huston we have an Problem!")
+        MsgBox("Sorry, I could not detect your Stardew Valley installation path. But no worries we can fix this! Just answer the following prompts.", MsgBoxStyle.OkOnly, "Huston we have an Problem!")
         Dim IniF As New INIForm
         IniF.ShowDialog()
     End Function
@@ -195,8 +197,29 @@ Public Class MainForm
         While System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini")
             My.Computer.FileSystem.MoveFile(Application.UserAppDataPath & "\SDVNN.ini", Application.UserAppDataPath & "\SDVMM.ini", True)
         End While
-
         'does the ini file exist?
+        If (Not System.IO.File.Exists(Application.UserAppDataPath & "\XNB.ini")) Then
+            For Each dra In diar3
+                Dim value = ""
+                value = INI_ReadValueFromFile("XNB Backup paths", dra.Name, "no", Application.UserAppDataPath & "\SDVMM.ini")
+                INI_WriteValueToFile("XNB Backup Paths", dra.Name, value, Application.UserAppDataPath & "\XNB.ini")
+                INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+            Next
+            Dim arr3() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all storm mods
+            Dim v = ""
+            For Each item As String In arr3
+                If item.Contains("=") Then
+                    If item.Contains(".storm") Then
+                        Dim param() As String = item.Split("=")
+                        Dim file() As String = param(0).Split(".")
+                        INI_ReadValueFromFile("Strom", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                        INI_WriteValueToFile("Storm", param(0), file(0) & "." & file(1), Application.UserAppDataPath & "\Storm.ini")
+                        INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                    End If
+                End If
+            Next
+        End If
+
         If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVMM.ini")) Then
             Dim spath As String = "Program Files (x86)\Steam\steamapps\common\Stardew Valley"
             Dim sspath As String = "Program Files (x86)\Steam\"
@@ -245,7 +268,7 @@ Public Class MainForm
             cSVersion = INI_ReadValueFromFile("SMAPI Details", "Version", "SMAPI_0.37.1A", Application.UserAppDataPath & "\SDVMM.ini")
         End If
         If (Not System.IO.File.Exists(folder & "\StardewModdingAPI.exe")) Then 'does smapi exist? if no:
-            If MsgBox("Couldnt Find SMAPI, should i install it?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then 'ask the user if he would like to install it.If yes:
+            If MsgBox("SMAPI does not appear to be installed, should i install it?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then 'ask the user if he would like to install it.If yes:
                 notFound = 1 'change variable to tell the subroutine that it can just install the update even if the a version number exist
                 checkSmapiUpdate() 'call sub routine
             Else 'if no
@@ -272,7 +295,7 @@ Public Class MainForm
                 ModList.Items.Add(dra)
             End If
         Next
-        Dim arr2() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all storm mods
+        Dim arr2() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\Storm.ini") 'reads all storm mods
         For Each item As String In arr2
             If item.Contains("=") Then
                 If item.Contains(".storm") Then
@@ -286,19 +309,13 @@ Public Class MainForm
                 End If
             End If
         Next
-        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all XNB Mods
-        For Each item As String In arr
-            If item.Contains("=") Then
-                If item.Contains("Content") Then
-                    Dim param() As String = item.Split("="c)
-                    If IO.File.Exists(appPath & "\Backup\" & param(0)) Then
-                        ModList.Items.Add(param(0))
-                    Else
-                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
-                    End If
-
-                End If
+        For Each dra In diar3
+            If IO.File.Exists(appPath & "\Backup\" & dra.Name) Then
+                ModList.Items.Add(dra.Name)
+            Else
+                INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\XNB.ini")
             End If
+
         Next
         For Each dra In diar2 ' reads all deactivated mods
             If ModListd.Items.Contains(dra) = False Then
@@ -311,7 +328,7 @@ Public Class MainForm
 
 
     Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
-        Dim Result As Integer = MsgBox("The SDVMM Forumpost will be opened, are you alright with this?", MsgBoxStyle.YesNo)
+        Dim Result As Integer = MsgBox("The SDVMM forum topic will be opened in your web browser, do you wish to proceed?", MsgBoxStyle.YesNo)
         If Result = DialogResult.Yes Then
             System.Diagnostics.Process.Start("http://community.playstarbound.com/threads/fairly-simple-mod-manager-batch-based.107663/")
         End If
@@ -321,7 +338,7 @@ Public Class MainForm
         Try
             Shell("cmd.exe /c" + "cd /d " & folder & "& call " + """" & folder & "\StardewModdingAPI.exe" & """")
         Catch ex As Exception
-            MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & folder)
+            MsgBox("Could not Launch Smapi! Please check if the path is correct? Path: " & folder)
         End Try
     End Sub
 
@@ -331,7 +348,7 @@ Public Class MainForm
             Shell("cmd.exe /c" + "cd /d " & folder & "& call " + """" & folder & "\StormLoader.exe" & """")
             Process.Start(folder & "\StormLoader.exe")
         Catch ex As Exception
-            MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & folder)
+            MsgBox("Could not Launch Storm API! Please check if the path is corect? Path: " & folder)
         End Try
     End Sub
 
@@ -344,9 +361,9 @@ Public Class MainForm
             End If
         Catch ex As Exception
             If gog = 1 Then
-                MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & folder)
+                MsgBox("Could not Launch Smapi! Please check if the path is correct? Path: " & folder)
             Else
-                MsgBox("Coldnt Launch Smapi! Is the path right? Path: " & Sfolder)
+                MsgBox("Could not Launch Smapi! Please check if the path is correct? Path: " & Sfolder)
             End If
         End Try
 
@@ -392,7 +409,7 @@ Public Class MainForm
                 End If
 
             Catch Ex As Exception
-                MessageBox.Show("Cannot read file from disk!")
+                MessageBox.Show("Cannot read file from disk! Please restart SDVMM and try again.")
             Finally
                 ' Check this again, since we need to make sure we didn't throw an exception on open.
                 If (myStream IsNot Nothing) Then
@@ -434,11 +451,11 @@ Public Class MainForm
                     If ModList.Items.Contains(Path.GetFileName(addname)) = False Then
                         ModList.Items.Add(Path.GetFileName(addname))
                     End If
-                    INI_WriteValueToFile("Storm", addname, fname, Application.UserAppDataPath & "\SDVMM.ini")
+                    INI_WriteValueToFile("Storm", addname, fname, Application.UserAppDataPath & "\Storm.ini")
                 End If
 
             Catch Ex As Exception
-                MessageBox.Show("Cannot read file from disk!")
+                MessageBox.Show("Cannot read file from disk! Please restart SDVMM and try again.")
             Finally
                 ' Check this again, since we need to make sure we didn't throw an exception on open.
                 If (myStream IsNot Nothing) Then
@@ -449,7 +466,7 @@ Public Class MainForm
     End Sub
 
     Private Sub dlm_Click(sender As Object, e As EventArgs) Handles dlm.Click
-        Dim Result As Integer = MsgBox("The Mod Subforum will be opened, are you alright with this?", MsgBoxStyle.YesNo)
+        Dim Result As Integer = MsgBox("The Stardew Valley Mod forum will be opened in your web browser, do you wish to proceed?", MsgBoxStyle.YesNo)
         If Result = DialogResult.Yes Then
             System.Diagnostics.Process.Start("http://community.playstarbound.com/forums/mods.215/")
         End If
@@ -462,7 +479,7 @@ Public Class MainForm
         If mIndex < 0 Then
             mIndex = ModListd.SelectedIndex
             If mIndex < 0 Then
-                MsgBox("No Mod to delete selected.", MsgBoxStyle.OkOnly, "no mod selected")
+                MsgBox("No Mod selected to delete.", MsgBoxStyle.OkOnly, "no mod selected")
                 Exit Sub
             End If
             mText = ModListd.Items(mIndex)
@@ -472,7 +489,7 @@ Public Class MainForm
         End If
         If mIndex >= 0 Then
 
-            Dim Result As Integer = MsgBox("are you sure that you want to delete: " & mText.ToString & "?", MsgBoxStyle.YesNo)
+            Dim Result As Integer = MsgBox("Are you sure that you want to delete the following mod: " & mText.ToString & "?", MsgBoxStyle.YesNo)
             If Result = DialogResult.Yes Then
                 If Path.GetExtension(mText.ToString) = ".dll" Then
                     If check = 0 Then
@@ -494,12 +511,12 @@ Public Class MainForm
                             Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & split(0) & "\"
                             System.IO.Directory.Delete(deldir, True)
                             ModList.Items.Remove(mText)
-                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\Storm.ini")
                         Else
                             Dim deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & split(0) & "\"
                             System.IO.Directory.Delete(deldir, True)
                             ModListd.Items.Remove(mText)
-                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\Storm.ini")
                         End If
                     Else
                         deleteXNB(mText)
@@ -566,7 +583,7 @@ Public Class MainForm
 
     Private Sub checkSmapiUpdate()
         If System.IO.File.Exists(appPath & "\Update\StardewModdingAPI.exe") Then
-            If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
+            If MsgBox("SMAPI Update Available! Do you want to download the update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
                 Call Update()
             End If
         End If
@@ -574,7 +591,7 @@ Public Class MainForm
         If IO.Directory.Exists(appPath & "\Update\") Then
             Dim Check = Directory.GetFiles(appPath & "\Update\", "*.zip")
             If Check.Length = 1 Then
-                If MsgBox("Found  Updated Files, do you want to update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
+                If MsgBox("SMAPI Update Available! Do you want to download the update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
                     Dim fileEntries As String() = Directory.GetFiles(appPath & "\Update\", "*.zip")
                     Dim sOnlyFileName As String
                     For Each sFileName In fileEntries
@@ -609,7 +626,7 @@ Public Class MainForm
             Dim fnameoe As String = Path.GetFileNameWithoutExtension(nurl)
             ' If (Not String.Compare(fnameoe, cSVersion)) = 0 Or notFound = 1 Then
             If Not (fnameoe = cSVersion) Or notFound = 1 Then
-                If MsgBox("SMAPI Update found, do you want to Install it now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Or notFound = 1 Then
+                If MsgBox("SMAPI Update Available! Do you want to install the update SMAPI now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Or notFound = 1 Then
                     Dim myWebClient As New WebClient()
                     myWebClient.DownloadFile(nurl, fname)
                     IO.File.Move(appPath & "\" & fname, appPath & "\Update\" & fname)
@@ -625,7 +642,7 @@ Public Class MainForm
         End If
     End Sub
 
- 
+
 
     Private Sub Label2_Click(sender As Object, e As EventArgs)
 
