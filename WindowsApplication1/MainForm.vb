@@ -194,32 +194,6 @@ Public Class MainForm
     'Launch Sub
     Private Sub SDVMM_Startup() Handles Me.Shown
         'fixing name error
-        While System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini")
-            My.Computer.FileSystem.MoveFile(Application.UserAppDataPath & "\SDVNN.ini", Application.UserAppDataPath & "\SDVMM.ini", True)
-        End While
-        'does the ini file exist?
-        If (Not System.IO.File.Exists(Application.UserAppDataPath & "\XNB.ini")) Then
-            For Each dra In diar3
-                Dim value = ""
-                value = INI_ReadValueFromFile("XNB Backup paths", dra.Name, "no", Application.UserAppDataPath & "\SDVMM.ini")
-                INI_WriteValueToFile("XNB Backup Paths", dra.Name, value, Application.UserAppDataPath & "\XNB.ini")
-                INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
-            Next
-            Dim arr3() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all storm mods
-            Dim v = ""
-            For Each item As String In arr3
-                If item.Contains("=") Then
-                    If item.Contains(".storm") Then
-                        Dim param() As String = item.Split("=")
-                        Dim file() As String = param(0).Split(".")
-                        INI_ReadValueFromFile("Strom", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
-                        INI_WriteValueToFile("Storm", param(0), file(0) & "." & file(1), Application.UserAppDataPath & "\Storm.ini")
-                        INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
-                    End If
-                End If
-            Next
-        End If
-
         If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVMM.ini")) Then
             Dim spath As String = "Program Files (x86)\Steam\steamapps\common\Stardew Valley"
             Dim sspath As String = "Program Files (x86)\Steam\"
@@ -229,7 +203,6 @@ Public Class MainForm
             Dim Folder2 As String = ""
             Dim Drives As DriveInfo
             Dim succses As Boolean = False
-
             'get all driveletter
             For Each Drives In allDrives
                 'if drive = HDD
@@ -295,35 +268,35 @@ Public Class MainForm
                 ModList.Items.Add(dra)
             End If
         Next
-        Dim arr2() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\Storm.ini") 'reads all storm mods
-        For Each item As String In arr2
-            If item.Contains("=") Then
-                If item.Contains(".storm") Then
-                    Dim param() As String = item.Split("=")
-                    Dim file() = param(0).Split(".")
-                    If IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & file(0) & "\") Then
-                        ModList.Items.Add(param(0))
-                    Else
-                        ModListd.Items.Add(param(0))
+            Dim arr2() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\Storm.ini") 'reads all storm mods
+            For Each item As String In arr2
+                If item.Contains("=") Then
+                    If item.Contains(".storm") Then
+                        Dim param() As String = item.Split("=")
+                        Dim file() = param(0).Split(".")
+                        If IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & file(0) & "\") Then
+                            ModList.Items.Add(param(0))
+                        Else
+                            ModListd.Items.Add(param(0))
+                        End If
                     End If
                 End If
-            End If
-        Next
-        For Each dra In diar3
-            If IO.File.Exists(appPath & "\Backup\" & dra.Name) Then
-                ModList.Items.Add(dra.Name)
-            Else
-                INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\XNB.ini")
-            End If
+            Next
+            For Each dra In diar3
+                If IO.File.Exists(appPath & "\Backup\" & dra.Name) Then
+                    ModList.Items.Add(dra.Name)
+                Else
+                    INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\XNB.ini")
+                End If
 
-        Next
-        For Each dra In diar2 ' reads all deactivated mods
-            If ModListd.Items.Contains(dra) = False Then
-                ModListd.Items.Add(dra)
-            End If
-        Next
-        LabelSmapi.Text = "SMAPI Version: " & cSVersion
-        LabelSD.Text = "SDVMM Version: " & cVersion
+            Next
+            For Each dra In diar2 ' reads all deactivated mods
+                If ModListd.Items.Contains(dra) = False Then
+                    ModListd.Items.Add(dra)
+                End If
+            Next
+            LabelSmapi.Text = "SMAPI Version: " & cSVersion
+            LabelSD.Text = "SDVMM Version: " & cVersion
     End Sub
 
 
