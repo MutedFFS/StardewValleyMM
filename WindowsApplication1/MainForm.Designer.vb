@@ -217,7 +217,7 @@ Partial Class MainForm
         Me.MaximizeBox = False
         Me.MinimumSize = New System.Drawing.Size(500, 400)
         Me.Name = "MainForm"
-        Me.Text = "SDVMM V1.4e"
+        Me.Text = "SDVMM V1.4f"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()

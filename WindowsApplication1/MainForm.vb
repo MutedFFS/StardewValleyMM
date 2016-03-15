@@ -20,7 +20,7 @@ Public Class MainForm
     Dim Sfolder = "C:\"
     Dim gog = 0
     Dim cSVersion = "0"
-    Dim cVersion = "1.4e"
+    Dim cVersion = "1.4f"
     Dim notFound = 0
     Dim Skip = 0
     Dim errorlv = 0
