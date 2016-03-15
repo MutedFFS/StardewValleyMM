@@ -212,8 +212,9 @@ Partial Class MainForm
         Me.Controls.Add(Me.LSMAPI)
         Me.Controls.Add(Me.addm)
         Me.Controls.Add(Me.PictureBox1)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MaximizeBox = False
         Me.MinimumSize = New System.Drawing.Size(500, 400)
         Me.Name = "MainForm"
         Me.Text = "SDVMM V1.4e"
