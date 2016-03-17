@@ -1,6 +1,14 @@
 ﻿Imports System.IO
 Imports System.IO.Compression
 Imports System.Net
+Imports System.Collections.Generic
+Imports System.Linq
+Imports System.Text
+Imports System.Threading.Tasks
+Imports System.Windows.Forms
+Imports System.Xml
+Imports System.Diagnostics
+Imports System.Security.Cryptography
 
 Public Class MainForm
     Public Shared xpath As String = ""
@@ -20,11 +28,11 @@ Public Class MainForm
     Dim Sfolder = "C:\"
     Dim gog = 0
     Dim cSVersion = "0"
-    Dim cVersion = "1.4f"
+    Dim cVersion = "1.4g"
     Dim notFound = 0
     Dim Skip = 0
     Dim errorlv = 0
-
+    Public Shared prel = False
 
     Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
 
@@ -134,6 +142,74 @@ Public Class MainForm
 
     End Function
 
+    Public Shared SHAcheck As String
+
+    Public Shared Function CheckVersion(Version As String) As Boolean
+        'Delete old Updater.exe
+        If File.Exists("Updater.exe") Then
+            File.Delete("Updater.exe")
+        End If
+        If File.Exists("Update.bat") Then
+            File.Delete("Update.bat")
+        End If
+        'Delete Old EXE's Now there is a standard
+        Try
+            Dim Update As New XmlDocument()
+            If prel = False Then
+                Update.Load("http://sdvmm.mirror-realms.com/Release/Update.xml")
+            Else
+                Update.Load("http://sdvmm.mirror-realms.com/Pre-Release/Update.xml")
+            End If
+            Dim Update_Version As String = Update.SelectSingleNode("/info/Version").InnerText
+            SHAcheck = Update.SelectSingleNode("/info/sha").InnerText
+            If Update_Version > Version Then
+                Return True
+            Else
+                Return False
+            End If
+        Catch
+            Return False
+        End Try
+    End Function
+
+    Public Shared Function checkSHA(Path As String) As Boolean
+        Dim FileDownloadSHA As String
+        Using stream As FileStream = File.OpenRead(Path)
+            Dim sha As New SHA256Managed()
+            Dim hash As Byte() = sha.ComputeHash(stream)
+            FileDownloadSHA = BitConverter.ToString(hash).Replace("-", String.Empty)
+        End Using
+        If FileDownloadSHA = SHAcheck Then
+            Return True
+        Else
+            Return False
+        End If
+    End Function
+
+    Public Shared Sub DownloadUpdate()
+        Using client = New WebClient()
+            If prel = False Then
+                client.DownloadFile("http://sdvmm.mirror-realms.com/Release/Update.exe", "Updater.exe")
+            Else
+                client.DownloadFile("http://sdvmm.mirror-realms.com/Pre-Release/Update.exe", "Updater.exe")
+            End If
+            client.DownloadFile("http://sdvmm.mirror-realms.com/Update.bat", "Update.bat")
+        End Using
+        If checkSHA("Updater.exe") Then
+            Dim Updater As New Process()
+            Updater.StartInfo.FileName = "Update.bat"
+            Updater.Start()
+            Application.Exit()
+        Else
+            Dim result = MessageBox.Show("Something Went Wrong with the Update.", "Update Failed...", MessageBoxButtons.RetryCancel)
+            If result = DialogResult.Retry Then
+                DownloadUpdate()
+            End If
+        End If
+    End Sub
+
+
+
     Function checkSDVMMUpdate()
         If My.Computer.Network.IsAvailable Then
             Try
@@ -193,6 +269,11 @@ Public Class MainForm
 
     'Launch Sub
     Private Sub SDVMM_Startup() Handles Me.Shown
+        Button2.Hide()
+        Button2.Enabled = False
+        If CheckVersion(cVersion) = True Then
+            DownloadUpdate()
+        End If
         'fixing name error
         If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVMM.ini")) Then
             Dim spath As String = "Program Files (x86)\Steam\steamapps\common\Stardew Valley"
@@ -251,6 +332,7 @@ Public Class MainForm
         If Skip = 0 Then 'this is only 1 if the subroutine was run with the parameter not found = 1, this is to tell the programm that it doenst need to check twice
             checkSmapiUpdate()
         End If
+        prel = INI_ReadValueFromFile("General", "Pre-Release", False, Application.UserAppDataPath & "\SDVMM.ini")
         If (Not System.IO.File.Exists(folder & "\StormLoader.exe")) Then 'same as with smapi. not implemented since it isnt Storm isnt really useable for the normal user imo. But it will detect it
             ' If MsgBox("Couldnt Find SMAPI, should i install it?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
             'notFound = 1
@@ -268,35 +350,35 @@ Public Class MainForm
                 ModList.Items.Add(dra)
             End If
         Next
-            Dim arr2() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\Storm.ini") 'reads all storm mods
-            For Each item As String In arr2
-                If item.Contains("=") Then
-                    If item.Contains(".storm") Then
-                        Dim param() As String = item.Split("=")
-                        Dim file() = param(0).Split(".")
-                        If IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & file(0) & "\") Then
-                            ModList.Items.Add(param(0))
-                        Else
-                            ModListd.Items.Add(param(0))
-                        End If
+        Dim arr2() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\Storm.ini") 'reads all storm mods
+        For Each item As String In arr2
+            If item.Contains("=") Then
+                If item.Contains(".storm") Then
+                    Dim param() As String = item.Split("=")
+                    Dim file() = param(0).Split(".")
+                    If IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & file(0) & "\") Then
+                        ModList.Items.Add(param(0))
+                    Else
+                        ModListd.Items.Add(param(0))
                     End If
                 End If
-            Next
-            For Each dra In diar3
-                If IO.File.Exists(appPath & "\Backup\" & dra.Name) Then
-                    ModList.Items.Add(dra.Name)
-                Else
-                    INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\XNB.ini")
-                End If
+            End If
+        Next
+        For Each dra In diar3
+            If IO.File.Exists(appPath & "\Backup\" & dra.Name) Then
+                ModList.Items.Add(dra.Name)
+            Else
+                INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\XNB.ini")
+            End If
 
-            Next
-            For Each dra In diar2 ' reads all deactivated mods
-                If ModListd.Items.Contains(dra) = False Then
-                    ModListd.Items.Add(dra)
-                End If
-            Next
-            LabelSmapi.Text = "SMAPI Version: " & cSVersion
-            LabelSD.Text = "SDVMM Version: " & cVersion
+        Next
+        For Each dra In diar2 ' reads all deactivated mods
+            If ModListd.Items.Contains(dra) = False Then
+                ModListd.Items.Add(dra)
+            End If
+        Next
+        LabelSmapi.Text = "SMAPI Version: " & cSVersion
+        LabelSD.Text = "SDVMM Version: " & cVersion
     End Sub
 
 
@@ -616,30 +698,15 @@ Public Class MainForm
     End Sub
 
 
-
-    Private Sub Label2_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim Form2 As New INIForm
         Form2.ShowDialog()
     End Sub
 
-    Private Sub LabelSD_Click(sender As Object, e As EventArgs) Handles LabelSD.Click
-
-    End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         Dim dlform As New Download
         dlform.ShowDialog()
     End Sub
 
-    Private Sub ModList_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ModList.SelectedIndexChanged
-
-    End Sub
-
-    Private Sub ModListd_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ModListd.SelectedIndexChanged
-
-    End Sub
 End Class

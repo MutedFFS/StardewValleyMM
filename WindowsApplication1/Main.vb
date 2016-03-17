@@ -2,6 +2,7 @@
 
 
 Module Main
+
     Dim appPath As String = Application.StartupPath()
     Dim smdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
     Dim dmdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
@@ -36,54 +37,69 @@ Module Main
     End Function
 
 
+
     Public Sub Main()
         Dim appPath As String = Application.StartupPath()
-        If (Not System.IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")) Then
-            System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
-        End If
-        If (Not System.IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")) Then
-            System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
-        End If
-        If (Not System.IO.Directory.Exists(appPath & "\Update\")) Then
-            System.IO.Directory.CreateDirectory(appPath & "\Update\")
-        End If
-        If (Not System.IO.Directory.Exists(appPath & "\Backup\")) Then
-            System.IO.Directory.CreateDirectory(appPath & "\Backup\")
-        End If
-
-        While System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini")
-            My.Computer.FileSystem.MoveFile(Application.UserAppDataPath & "\SDVNN.ini", Application.UserAppDataPath & "\SDVMM.ini", True)
-        End While
-        'does the ini file exist?
-        If (Not System.IO.File.Exists(Application.UserAppDataPath & "\XNB.ini") And System.IO.File.Exists(Application.UserAppDataPath & "\SDVMM.ini")) Then
-
-            INI_WriteValueToFile("XNB Backup Paths", Nothing, Nothing, Application.UserAppDataPath & "\XNB.ini")
-            INI_WriteValueToFile("Storm", Nothing, Nothing, Application.UserAppDataPath & "\Storm.ini")
-
-            For Each dra In diar3
-                Dim value = ""
-                value = INI_ReadValueFromFile("XNB Backup paths", dra.Name, "no", Application.UserAppDataPath & "\SDVMM.ini")
-                INI_WriteValueToFile("XNB Backup Paths", dra.Name, value, Application.UserAppDataPath & "\XNB.ini")
-                INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
-            Next
-            Dim arr3() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all storm mods
-            For Each item As String In arr3
-                If item.Contains("=") Then
-                    If item.Contains(".storm") Then
-                        Dim param() As String = item.Split("=")
-                        Dim file() As String = param(0).Split(".")
-                        INI_ReadValueFromFile("Strom", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
-                        INI_WriteValueToFile("Storm", param(0), file(0) & "." & file(1), Application.UserAppDataPath & "\Storm.ini")
-                        INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+        Dim errcode As Integer = 0
+        Try
+            errcode = 1
+            If (Not System.IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")) Then
+                System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
+            End If
+            errcode = 2
+            If (Not System.IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")) Then
+                System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
+            End If
+            errcode = 3
+            If (Not System.IO.Directory.Exists(appPath & "\Update\")) Then
+                System.IO.Directory.CreateDirectory(appPath & "\Update\")
+            End If
+            errcode = 4
+            If (Not System.IO.Directory.Exists(appPath & "\Backup\")) Then
+                System.IO.Directory.CreateDirectory(appPath & "\Backup\")
+            End If
+            errcode = 5
+            While System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini")
+                My.Computer.FileSystem.MoveFile(Application.UserAppDataPath & "\SDVNN.ini", Application.UserAppDataPath & "\SDVMM.ini", True)
+            End While
+            'does the ini file exist?
+            errcode = 6
+            If (Not System.IO.File.Exists(Application.UserAppDataPath & "\XNB.ini") And System.IO.File.Exists(Application.UserAppDataPath & "\SDVMM.ini")) Then
+                errcode = 7
+                INI_WriteValueToFile("XNB Backup Paths", Nothing, Nothing, Application.UserAppDataPath & "\XNB.ini")
+                INI_WriteValueToFile("Storm", Nothing, Nothing, Application.UserAppDataPath & "\Storm.ini")
+                errcode = 8
+                For Each dra In diar3
+                    Dim value = ""
+                    value = INI_ReadValueFromFile("XNB Backup paths", dra.Name, "no", Application.UserAppDataPath & "\SDVMM.ini")
+                    INI_WriteValueToFile("XNB Backup Paths", dra.Name, value, Application.UserAppDataPath & "\XNB.ini")
+                    INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                Next
+                errcode = 9
+                Dim arr3() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini") 'reads all storm mods
+                For Each item As String In arr3
+                    If item.Contains("=") Then
+                        If item.Contains(".storm") Then
+                            Dim param() As String = item.Split("=")
+                            Dim file() As String = param(0).Split(".")
+                            errcode = 10
+                            INI_ReadValueFromFile("Strom", param(0), Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                            INI_WriteValueToFile("Storm", param(0), file(0) & "." & file(1), Application.UserAppDataPath & "\Storm.ini")
+                            INI_WriteValueToFile("XNB Backup paths", dra.Name, Nothing, Application.UserAppDataPath & "\SDVMM.ini")
+                        End If
                     End If
-                End If
-            Next
-        End If
+                Next
+            End If
+            errcode = 11
+            Application.EnableVisualStyles()
+            errcode = 12
+            Application.SetCompatibleTextRenderingDefault(False)
+            errcode = 13
+            Application.Run(New MainForm)
 
-        Application.EnableVisualStyles()
-        Application.SetCompatibleTextRenderingDefault(False)
-        Application.Run(New MainForm)
-
+        Catch ex As Exception
+            MsgBox("Failed to Launch! Errorcode:" & errcode)
+        End Try
     End Sub
 
 End Module
