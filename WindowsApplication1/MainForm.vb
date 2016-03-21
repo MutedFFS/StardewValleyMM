@@ -28,7 +28,7 @@ Public Class MainForm
     Dim Sfolder = "C:\"
     Dim gog = 0
     Dim cSVersion = "0"
-    Dim cVersion = "1.4g"
+    Dim cVersion = "1.4i"
     Dim notFound = 0
     Dim Skip = 0
     Dim errorlv = 0
@@ -115,7 +115,9 @@ Public Class MainForm
         'Parse folder from form
         Dim xtpath = XNBForm.XtFolder & "\" & Fname
         Dim name = shPath(XNBForm.XtFolder) & "-" & Fname
-        My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
+        If (Not IO.File.Exists(appPath & "\Backup\" & name)) Then
+            My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
+        End If
         IO.File.Copy(xpath, xtpath)
         INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\XNB.ini")
         If ModList.Items.Contains(name) = False Then
@@ -124,7 +126,7 @@ Public Class MainForm
     End Function
 
     Function deleteXNB(name As String)
-        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\SDVMM.ini")
+        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\XNB.ini")
         For Each item As String In arr
             If item.Contains("=") Then
                 If item.Contains("Content") Then
@@ -269,6 +271,7 @@ Public Class MainForm
 
     'Launch Sub
     Private Sub SDVMM_Startup() Handles Me.Shown
+        prel = INI_ReadValueFromFile("General", "Pre-Release", False, Application.UserAppDataPath & "\SDVMM.ini")
         Button2.Hide()
         Button2.Enabled = False
         If CheckVersion(cVersion) = True Then
@@ -332,7 +335,6 @@ Public Class MainForm
         If Skip = 0 Then 'this is only 1 if the subroutine was run with the parameter not found = 1, this is to tell the programm that it doenst need to check twice
             checkSmapiUpdate()
         End If
-        prel = INI_ReadValueFromFile("General", "Pre-Release", False, Application.UserAppDataPath & "\SDVMM.ini")
         If (Not System.IO.File.Exists(folder & "\StormLoader.exe")) Then 'same as with smapi. not implemented since it isnt Storm isnt really useable for the normal user imo. But it will detect it
             ' If MsgBox("Couldnt Find SMAPI, should i install it?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
             'notFound = 1
@@ -529,7 +531,7 @@ Public Class MainForm
 
     Private Sub delm_Click(sender As Object, e As EventArgs) Handles delm.Click
         Dim mIndex As Integer = ModList.SelectedIndex
-        Dim mText = ModList.Items(1)
+        Dim mText = ModList.Items(mIndex)
         Dim check As Integer = 0
         If mIndex < 0 Then
             mIndex = ModListd.SelectedIndex
@@ -667,7 +669,7 @@ Public Class MainForm
             Dim version = Nothing
             Dim arr() As String = IO.File.ReadAllLines(appPath & "\Update\vcheck.txt")
             For Each item As String In arr
-                If item.Contains("/SMAPI_") Then
+                If item.Contains("/SMAPI-") Or item.Contains("/SMAPI_") Then
                     Dim param() As String = item.Split("/")
                     If file = Nothing Then
                         file = param(1) & "/" & param(2) & "/" & param(3) & "/" & param(4) & "/" & param(5) & "/" & param(6)
@@ -709,4 +711,7 @@ Public Class MainForm
         dlform.ShowDialog()
     End Sub
 
+    Private Sub ModList_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ModList.SelectedIndexChanged
+
+    End Sub
 End Class
