@@ -29,7 +29,7 @@ Public Class MainForm
     Dim Sfolder = "C:\"
     Dim gog = 0
     Dim cSVersion = "0"
-    Dim cVersion = "1.6"
+    Dim cVersion = "1.6a"
     Dim notFound = 0
     Dim Skip = 0
     Dim errorlv = 0
@@ -119,7 +119,7 @@ Public Class MainForm
         If (Not IO.File.Exists(appPath & "\Backup\" & name)) Then
             My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
         End If
-        IO.File.Copy(xpath, xtpath)
+        IO.File.Copy(xpath, xtpath, True)
         INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\XNB.ini")
         If ModList.Items.Contains(name) = False Then
             ModList.Items.Add(name)
@@ -354,9 +354,11 @@ Public Class MainForm
                 ModList.Items.Add(dra)
             End If
         Next
+        Dim result = 0
         For Each Dir As String In Directory.GetDirectories(folder & "\mods\")
             Dim file = shPath(Dir)
-            If file IsNot "content" Then
+            result = String.Compare(file, "Content")
+            If result > 0 Or result < 0 Then
                 If ModList.Items.Contains(file & ".dll") = False Then 'check to defend against double entries
                     ModList.Items.Add(file & ".dll")
                 End If
@@ -365,7 +367,8 @@ Public Class MainForm
 
         For Each Dir As String In Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\")
             Dim file = shPath(Dir)
-            If file IsNot "content" Then
+            result = String.Compare(file, "Content")
+            If result > 0 Or result < 0 Then
                 If ModList.Items.Contains(file & ".dll") = False Then 'check to defend against double entries
                     ModList.Items.Add(file & ".dll")
                 End If
@@ -373,7 +376,8 @@ Public Class MainForm
         Next
         For Each Dir As String In Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\")
             Dim file = shPath(Dir)
-            If file IsNot "content" Then
+            result = String.Compare(file, "Content")
+            If result > 0 Or result < 0 Then
                 If ModListd.Items.Contains(file & ".dll") = False Then 'check to defend against double entries
                     ModListd.Items.Add(file & ".dll")
                 End If
@@ -475,8 +479,8 @@ Public Class MainForm
         openFileDialog1.Filter = "SMAPI Mod files (*.dll)|*.dll|XNB Mods (*.XNB)|*.xnb|SMAPI MOD Ini(*.ini)|*.ini|All|*.*"
         openFileDialog1.FilterIndex = 1
         openFileDialog1.Title = "Select SMAPI-Mod"
-        openFileDialog1.RestoreDirectory = True
-        openFileDialog1.Multiselect = False
+        openFileDialog1.RestoreDirectory = False
+        openFileDialog1.Multiselect = True
         If openFileDialog1.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
             Try
                 myStream = openFileDialog1.OpenFile()
@@ -603,12 +607,12 @@ Public Class MainForm
                 If Path.GetExtension(mText.ToString) = ".dll" Then
                     If check = 0 Then
                         If IO.File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & Path.GetFileNameWithoutExtension(mText.ToString) & "\" & mText.ToString) Then
-                            deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & Path.GetFileNameWithoutExtension(mText.ToString) & "\"
+                            deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & Path.GetFileNameWithoutExtension(mText.ToString)
                         Else
                             If IO.File.Exists(Modfolder & "\" & Path.GetFileNameWithoutExtension(mText.ToString) & "\" & mText.ToString) Then
-                                deldir = Modfolder & "\" & Path.GetFileNameWithoutExtension(mText.ToString) & "\"
+                                deldir = Modfolder & "\" & Path.GetFileNameWithoutExtension(mText.ToString)
                                 System.IO.File.Delete(deldir & mText.ToString)
-                                System.IO.Directory.Delete(deldir)
+                                System.IO.Directory.Delete(deldir, True)
                                 ModList.Items.Remove(mText)
                                 Exit Sub
                             Else
@@ -631,7 +635,7 @@ Public Class MainForm
                         Dim split() = mnew.Split(".")
                         ' MsgBox(split(0) & "." & split(1))
                         If check = 0 Then
-                            deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & split(0) & "\"
+                        deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & split(0)
                             System.IO.Directory.Delete(deldir, True)
                             ModList.Items.Remove(mText)
                             INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\Storm.ini")
@@ -823,7 +827,11 @@ Public Class MainForm
             Else
             End If
         Catch ex As Exception
-            MsgBox("Couldn't Check for Smapi Update. Errorcode: " & c & " p(0): " & x, MsgBoxStyle.OkOnly)
+            If MsgBox(ex.ToString, MsgBoxStyle.RetryCancel) = MsgBoxResult.Retry Then
+                checkSDVMMUpdate()
+            Else
+                Skip = 1
+            End If
         End Try
     End Sub
 
