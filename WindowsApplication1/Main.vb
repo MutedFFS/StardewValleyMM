@@ -51,6 +51,9 @@ Module Main
             System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
         End If
         errcode = 3
+        If (System.IO.Directory.Exists(appPath & "\Update\")) Then
+            IO.Directory.Delete(appPath & "\Update\", True)
+        End If
         If (Not System.IO.Directory.Exists(appPath & "\Update\")) Then
             System.IO.Directory.CreateDirectory(appPath & "\Update\")
         End If
@@ -58,6 +61,7 @@ Module Main
         If (Not System.IO.Directory.Exists(appPath & "\Backup\")) Then
             System.IO.Directory.CreateDirectory(appPath & "\Backup\")
         End If
+
         errcode = 5
         While System.IO.File.Exists(Application.UserAppDataPath & "\SDVNN.ini")
             My.Computer.FileSystem.MoveFile(Application.UserAppDataPath & "\SDVNN.ini", Application.UserAppDataPath & "\SDVMM.ini", True)

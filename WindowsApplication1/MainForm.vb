@@ -29,7 +29,7 @@ Public Class MainForm
     Dim Sfolder = "C:\"
     Dim gog = 0
     Dim cSVersion = "0"
-    Dim cVersion = "1.6a"
+    Dim cVersion = "1.6c"
     Dim notFound = 0
     Dim Skip = 0
     Dim errorlv = 0
@@ -81,18 +81,15 @@ Public Class MainForm
     End Function
 
     Function Update()
+        Dim cfolder = ""
         Try
-            For Each foundFile As String In My.Computer.FileSystem.GetFiles(appPath & "\Update\", Microsoft.VisualBasic.FileIO.SearchOption.SearchAllSubDirectories, "*.*")
-                Dim foundFileInfo As New System.IO.FileInfo(foundFile)
-                Dim ext = Path.GetExtension(foundFile)
-                If ext = ".dll" Then
-                    errorlv = 1
-                    My.Computer.FileSystem.MoveFile(foundFile, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & foundFileInfo.Name, True)
-                Else
-                    errorlv = 2
-                    My.Computer.FileSystem.MoveFile(foundFile, folder & "\" & foundFileInfo.Name, True)
-                End If
+            For Each Dir As String In Directory.GetDirectories(appPath & "\Update\")
+                cfolder = shPath(Dir)
             Next
+            Dim x = appPath & "\Update\" & cfolder & "\Mods\"
+            Dim y = folder & "\Mods\"
+            My.Computer.FileSystem.MoveDirectory(x, y, True)
+            My.Computer.FileSystem.MoveFile(appPath & "\Update\" & cfolder & "\StardewModdingAPI.exe", folder & "\StardewModdingAPI.exe", False)
             errorlv = 3
             System.IO.Directory.Delete(appPath & "\Update\", True)
             errorlv = 4
@@ -276,7 +273,9 @@ Public Class MainForm
         Button2.Hide()
         Button2.Enabled = False
         If CheckVersion(cVersion) = True Then
-            DownloadUpdate()
+            If MsgBox("SDVMM Update found. Install now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                DownloadUpdate()
+            End If
         End If
         'fixing name error
         If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVMM.ini")) Then
@@ -333,6 +332,9 @@ Public Class MainForm
             Else 'if no
                 LSMAPI.Enabled = False 'deactivate the button
             End If
+        End If
+        If (Not System.IO.Directory.Exists(folder & "\Mods\")) Then
+            System.IO.Directory.CreateDirectory(folder & "\Mods\")
         End If
         If Skip = 0 Then 'this is only 1 if the subroutine was run with the parameter not found = 1, this is to tell the programm that it doenst need to check twice
             checkSmapiUpdate()
@@ -848,6 +850,10 @@ Public Class MainForm
     End Sub
 
     Private Sub ModList_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ModList.SelectedIndexChanged
+
+    End Sub
+
+    Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
     End Sub
 End Class
