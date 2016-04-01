@@ -5,7 +5,7 @@ Public Class INIForm
     Dim Sfolder = INI_ReadValueFromFile("General", "SteamFolder", "C:\", Application.UserAppDataPath & "\SDVMM.ini")
     Dim gog = INI_ReadValueFromFile("General", "Good Old Game Version", 0, Application.UserAppDataPath & "\SDVMM.ini")
     Dim Modfolder = INI_ReadValueFromFile("General", "ModFolder", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\", Application.UserAppDataPath & "\SDVMM.ini")
-
+    Dim rchannel = INI_ReadValueFromFile("General", "Release Channel", "Stable", Application.UserAppDataPath & "\SDVMM.ini")
 
     Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
 
@@ -45,6 +45,7 @@ Public Class INIForm
         End If
         TextGfolder.Text = folder
         TextSFolder.Text = Sfolder
+        channel.Text = rchannel
         If Modfolder = folder & "\Mods" Then
             mflabel.Text = "Stardew Valley Folder"
         Else
@@ -85,6 +86,7 @@ Public Class INIForm
         INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVMM.ini")
         INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVMM.ini")
         INI_WriteValueToFile("General", "ModFolder", Modfolder, Application.UserAppDataPath & "\SDVMM.ini")
+        INI_WriteValueToFile("General", "Release Channel", rchannel, Application.UserAppDataPath & "\SDVMM.ini")
         Close()
     End Sub
 
@@ -175,6 +177,26 @@ Public Class INIForm
         Else
             mflabel.Text = "AppData"
             Modfolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods"
+        End If
+    End Sub
+
+    Private Sub channel_Click(sender As Object, e As EventArgs) Handles channel.Click
+        If channel.Text = "Stable" Then
+            channel.Text = "Unstable"
+            rchannel = "Unstable"
+        Else
+            channel.Text = "Stable"
+            rchannel = "Stable"
+        End If
+    End Sub
+
+    Private Sub channelc_Click(sender As Object, e As EventArgs) Handles channelc.Click
+        If channel.Text = "Stable" Then
+            channel.Text = "Unstable"
+            rchannel = "Unstable"
+        Else
+            channel.Text = "Stable"
+            rchannel = "Stable"
         End If
     End Sub
 End Class

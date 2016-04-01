@@ -38,6 +38,9 @@ Partial Class INIForm
         Me.mfolder = New System.Windows.Forms.Button()
         Me.mflabel = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
+        Me.channel = New System.Windows.Forms.Label()
+        Me.channelc = New System.Windows.Forms.Button()
+        Me.Label6 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Label1
@@ -61,7 +64,7 @@ Partial Class INIForm
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(13, 70)
+        Me.Label3.Location = New System.Drawing.Point(13, 98)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(64, 13)
         Me.Label3.TabIndex = 2
@@ -70,7 +73,7 @@ Partial Class INIForm
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(12, 104)
+        Me.Label4.Location = New System.Drawing.Point(12, 132)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(63, 13)
         Me.Label4.TabIndex = 3
@@ -78,21 +81,21 @@ Partial Class INIForm
         '
         'TextGfolder
         '
-        Me.TextGfolder.Location = New System.Drawing.Point(108, 70)
+        Me.TextGfolder.Location = New System.Drawing.Point(108, 98)
         Me.TextGfolder.Name = "TextGfolder"
         Me.TextGfolder.Size = New System.Drawing.Size(224, 20)
         Me.TextGfolder.TabIndex = 4
         '
         'TextSFolder
         '
-        Me.TextSFolder.Location = New System.Drawing.Point(108, 101)
+        Me.TextSFolder.Location = New System.Drawing.Point(108, 129)
         Me.TextSFolder.Name = "TextSFolder"
         Me.TextSFolder.Size = New System.Drawing.Size(224, 20)
         Me.TextSFolder.TabIndex = 5
         '
         'Save
         '
-        Me.Save.Location = New System.Drawing.Point(16, 131)
+        Me.Save.Location = New System.Drawing.Point(16, 159)
         Me.Save.Name = "Save"
         Me.Save.Size = New System.Drawing.Size(75, 23)
         Me.Save.TabIndex = 6
@@ -101,7 +104,7 @@ Partial Class INIForm
         '
         'Cancel
         '
-        Me.Cancel.Location = New System.Drawing.Point(348, 131)
+        Me.Cancel.Location = New System.Drawing.Point(348, 159)
         Me.Cancel.Name = "Cancel"
         Me.Cancel.Size = New System.Drawing.Size(75, 23)
         Me.Cancel.TabIndex = 7
@@ -110,7 +113,7 @@ Partial Class INIForm
         '
         'cGfolder
         '
-        Me.cGfolder.Location = New System.Drawing.Point(348, 68)
+        Me.cGfolder.Location = New System.Drawing.Point(348, 96)
         Me.cGfolder.Name = "cGfolder"
         Me.cGfolder.Size = New System.Drawing.Size(75, 23)
         Me.cGfolder.TabIndex = 8
@@ -119,7 +122,7 @@ Partial Class INIForm
         '
         'cSfolder
         '
-        Me.cSfolder.Location = New System.Drawing.Point(348, 99)
+        Me.cSfolder.Location = New System.Drawing.Point(348, 127)
         Me.cSfolder.Name = "cSfolder"
         Me.cSfolder.Size = New System.Drawing.Size(75, 23)
         Me.cSfolder.TabIndex = 9
@@ -137,7 +140,7 @@ Partial Class INIForm
         '
         'oif
         '
-        Me.oif.Location = New System.Drawing.Point(173, 131)
+        Me.oif.Location = New System.Drawing.Point(173, 159)
         Me.oif.Name = "oif"
         Me.oif.Size = New System.Drawing.Size(102, 23)
         Me.oif.TabIndex = 11
@@ -171,11 +174,41 @@ Partial Class INIForm
         Me.Label5.TabIndex = 12
         Me.Label5.Text = "ModFolder"
         '
+        'channel
+        '
+        Me.channel.AutoSize = True
+        Me.channel.Location = New System.Drawing.Point(105, 72)
+        Me.channel.Name = "channel"
+        Me.channel.Size = New System.Drawing.Size(45, 13)
+        Me.channel.TabIndex = 15
+        Me.channel.Text = "channel"
+        '
+        'channelc
+        '
+        Me.channelc.Location = New System.Drawing.Point(348, 66)
+        Me.channelc.Name = "channelc"
+        Me.channelc.Size = New System.Drawing.Size(75, 23)
+        Me.channelc.TabIndex = 16
+        Me.channelc.Text = "Change"
+        Me.channelc.UseVisualStyleBackColor = True
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(13, 72)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(88, 13)
+        Me.Label6.TabIndex = 17
+        Me.Label6.Text = "Release Channel"
+        '
         'INIForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(430, 164)
+        Me.ClientSize = New System.Drawing.Size(430, 200)
+        Me.Controls.Add(Me.Label6)
+        Me.Controls.Add(Me.channelc)
+        Me.Controls.Add(Me.channel)
         Me.Controls.Add(Me.mfolder)
         Me.Controls.Add(Me.mflabel)
         Me.Controls.Add(Me.Label5)
@@ -215,4 +248,7 @@ Partial Class INIForm
     Friend WithEvents mfolder As System.Windows.Forms.Button
     Friend WithEvents mflabel As System.Windows.Forms.Label
     Friend WithEvents Label5 As System.Windows.Forms.Label
+    Friend WithEvents channel As System.Windows.Forms.Label
+    Friend WithEvents channelc As System.Windows.Forms.Button
+    Friend WithEvents Label6 As System.Windows.Forms.Label
 End Class

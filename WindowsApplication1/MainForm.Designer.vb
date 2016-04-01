@@ -57,7 +57,7 @@ Partial Class MainForm
         '
         Me.addm.Location = New System.Drawing.Point(459, 257)
         Me.addm.Name = "addm"
-        Me.addm.Size = New System.Drawing.Size(130, 40)
+        Me.addm.Size = New System.Drawing.Size(271, 40)
         Me.addm.TabIndex = 3
         Me.addm.Text = "Add  SMAPI/XNB Mod"
         Me.addm.UseVisualStyleBackColor = True
@@ -66,7 +66,7 @@ Partial Class MainForm
         '
         Me.LSMAPI.Location = New System.Drawing.Point(459, 151)
         Me.LSMAPI.Name = "LSMAPI"
-        Me.LSMAPI.Size = New System.Drawing.Size(130, 40)
+        Me.LSMAPI.Size = New System.Drawing.Size(271, 40)
         Me.LSMAPI.TabIndex = 4
         Me.LSMAPI.Text = "Launch SMAPI"
         Me.LSMAPI.UseVisualStyleBackColor = True
@@ -182,7 +182,7 @@ Partial Class MainForm
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(652, 406)
+        Me.Button1.Location = New System.Drawing.Point(655, 406)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(75, 22)
         Me.Button1.TabIndex = 19
@@ -228,7 +228,7 @@ Partial Class MainForm
         Me.MaximizeBox = False
         Me.MinimumSize = New System.Drawing.Size(500, 400)
         Me.Name = "MainForm"
-        Me.Text = "SDVMM V1.6c"
+        Me.Text = "SDVMM V1.6e"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
