@@ -9,14 +9,21 @@ Imports System.Windows.Forms
 Imports System.Xml
 Imports System.Diagnostics
 Imports System.Security.Cryptography
+Imports Awesomium.Core
+Imports Awesomium.Windows.Forms
+
 
 Public Class MainForm
+    Public Shared xbo As Boolean = False
     Public Shared xpath As String = ""
     Public Shared Multiok = 0
     Public Shared Mulitcount = 0
     Public Shared Fname As String = ""
     Public Shared Modfolder As String = ""
-    Dim appPath As String = Application.StartupPath()
+    Public Shared appPath As String = Application.StartupPath()
+    Public Shared ddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
+    Public Shared xa() As String = {}
+    Public Shared count As Integer = 0
     Dim smdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
     Dim dmdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
     Dim xmdir As New IO.DirectoryInfo(appPath & "\Backup")
@@ -29,12 +36,13 @@ Public Class MainForm
     Dim Sfolder = "C:\"
     Dim gog = 0
     Dim cSVersion = "0"
-    Dim cVersion = "1.6e1"
+    Dim cVersion = "2"
     Dim notFound = 0
     Dim Skip = 0
-    Dim errorlv = 0
+    Shared errorlv = 0
     Public Shared prel = False
     Public Shared release_channel
+    Dim lastdir = INI_ReadValueFromFile("General", "LastDir", "C:\", Application.UserAppDataPath & "\SDVMM.ini")
 
     Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
 
@@ -42,7 +50,10 @@ Public Class MainForm
     '
     '       Functions
     '
-    Private Function INI_ReadValueFromFile(ByVal strSection As String, ByVal strKey As String, ByVal strDefault As String, ByVal strFile As String) As String
+
+
+
+    Public Shared Function INI_ReadValueFromFile(ByVal strSection As String, ByVal strKey As String, ByVal strDefault As String, ByVal strFile As String) As String
         'Reading Function 
         'strSection = Section of the INI-File
         'strKey = Name of the Key
@@ -53,7 +64,7 @@ Public Class MainForm
         Return (strTemp.Substring(0, lLength))
     End Function
 
-    Public Function INI_WriteValueToFile(ByVal strSection As String, ByVal strKey As String, ByVal strValue As String, ByVal strFile As String) As Boolean
+    Public Shared Function INI_WriteValueToFile(ByVal strSection As String, ByVal strKey As String, ByVal strValue As String, ByVal strFile As String) As Boolean
         'Write function
         'strSection = Section of the INI-File
         'strKey = Name of Key
@@ -62,7 +73,7 @@ Public Class MainForm
         Return (Not (WritePrivateProfileString(strSection, strKey, strValue, strFile) = 0))
     End Function
 
-    Function shPath(mypath As String)
+    Shared Function shPath(mypath As String)
         Dim myPos As Integer
         Dim myFolder As String
 
@@ -76,12 +87,13 @@ Public Class MainForm
     End Function
 
 
+
     Function UpdateSNAPI(url)
         My.Computer.Network.DownloadFile(url, appPath & "\Update\update.zip", "", "", True, 500, True)
         zip(appPath & "\Update\update.zip", appPath & "\Update\", 1, True)
     End Function
 
-    Function Update()
+    Shared Function Update()
         Dim cfolder = ""
         Dim x = ""
         Dim y = ""
@@ -127,7 +139,7 @@ Public Class MainForm
         End Try
     End Function
 
-    Function installXNB()
+    Private Function installXNB(xspath As String)
         Dim Form As New XNBForm
         'open XNB Form
         If Multiok = 0 Then
@@ -139,7 +151,7 @@ Public Class MainForm
         If (Not IO.File.Exists(appPath & "\Backup\" & name)) Then
             My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
         End If
-        IO.File.Copy(xpath, xtpath, True)
+        IO.File.Copy(xspath, xtpath, True)
         INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\XNB.ini")
         If ModList.Items.Contains(name) = False Then
             ModList.Items.Add(name)
@@ -275,7 +287,7 @@ Public Class MainForm
         IniF.ShowDialog()
     End Function
 
-    Function zip(zPath As String, dPath As String, mode As Integer, up As Boolean)
+    Shared Function zip(zPath As String, dPath As String, mode As Integer, up As Boolean)
         If mode = 0 Then
             ZipFile.CreateFromDirectory(zPath, dPath)
         Else
@@ -293,10 +305,9 @@ Public Class MainForm
     '
 
     'Launch Sub
-    Private Sub SDVMM_Startup() Handles Me.Shown
+    Private Sub SDVMM_Startup() Handles Me.Load
+        '  Button3.Hide()
         prel = INI_ReadValueFromFile("General", "Pre-Release", False, Application.UserAppDataPath & "\SDVMM.ini")
-        Button2.Hide()
-        Button2.Enabled = False
         ASM.Enabled = False
         ASM.Hide()
         LStorm.Enabled = False
@@ -377,7 +388,7 @@ Public Class MainForm
         '  LSMAPI.Enabled = False
         'End If
         'LStorm.Enabled = False 'if not  disable the button
-      '  End If
+        '  End If
         '  checkSDVMMUpdate() ' here he should check for an update of the mod manager but not yet implemented
         ModList.Items.Clear() ' clea the modlists. While they should be empty anyways i still want to be sure
         ModListd.Items.Clear()
@@ -508,11 +519,10 @@ Public Class MainForm
         Dim myStream As Stream = Nothing
         Dim openFileDialog1 As New OpenFileDialog()
         Dim ddir = Modfolder & "\"
-        openFileDialog1.InitialDirectory = "c:\"
+        openFileDialog1.InitialDirectory = lastdir
         openFileDialog1.Filter = "SMAPI Mod files (*.dll)|*.dll|XNB Mods (*.XNB)|*.xnb|SMAPI MOD Ini(*.ini)|*.ini|All|*.*"
         openFileDialog1.FilterIndex = 1
         openFileDialog1.Title = "Select SMAPI-Mod"
-        openFileDialog1.RestoreDirectory = False
         openFileDialog1.Multiselect = True
         If openFileDialog1.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
             Try
@@ -522,12 +532,15 @@ Public Class MainForm
                         Mulitcount += 1
                     Next
                     For Each s As String In openFileDialog1.FileNames
+                        Dim dir = Path.GetDirectoryName(s) & "\"
+                        INI_WriteValueToFile("General", "lastDir", gog, Application.UserAppDataPath & "\SDVMM.ini")
+                        lastdir = dir
                         Fname = Path.GetFileName(s)
                         Dim tdir = ddir & Path.GetFileName(s)
                         Dim ext = Path.GetExtension(s)
                         If ext = ".xnb" Then
                             xpath = s
-                            installXNB()
+                            installXNB(xpath)
                         Else
                             tdir = ddir & Path.GetFileNameWithoutExtension(s) & "\" ' & Path.GetFileName(s)
                             Dim paths = Path.GetDirectoryName(s)
@@ -568,7 +581,6 @@ Public Class MainForm
         Exit Sub
         Dim myStream As Stream = Nothing
         Dim openFileDialog1 As New OpenFileDialog()
-        Dim ddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
         openFileDialog1.InitialDirectory = "c:\"
         openFileDialog1.Filter = "Storm Mod files (*.dll)|*.dll"
         openFileDialog1.FilterIndex = 2
@@ -591,7 +603,7 @@ Public Class MainForm
                     Next
                     My.Computer.FileSystem.CopyDirectory(Folder, ddir, True)
                     'My.Computer.FileSystem.DeleteDirectory(Folder, FileIO.DeleteDirectoryOption.DeleteAllContents)
-                    Dim addname = Fname & ".storm"
+                    Dim addname = fname & ".storm"
                     ' MsgBox(Path.GetExtension(addname))
                     ' MsgBox(addname)
                     If ModList.Items.Contains(Path.GetFileName(addname)) = False Then
@@ -613,10 +625,39 @@ Public Class MainForm
     End Sub
 
     Private Sub dlm_Click(sender As Object, e As EventArgs) Handles dlm.Click
-        Dim Result As Integer = MsgBox("The Stardew Valley Mod forum will be opened in your web browser, do you wish to proceed?", MsgBoxStyle.YesNo)
-        If Result = DialogResult.Yes Then
-            System.Diagnostics.Process.Start("http://community.playstarbound.com/forums/mods.215/")
+        If System.IO.Directory.Exists(appPath & "\Update\") Then
+            My.Computer.FileSystem.DeleteDirectory(appPath & "\unpacked\", FileIO.DeleteDirectoryOption.DeleteAllContents)
+            My.Computer.FileSystem.CreateDirectory(appPath & "\unpacked\")
         End If
+        If (Not System.IO.Directory.Exists(appPath & "\Update\")) Then
+            My.Computer.FileSystem.CreateDirectory(appPath & "\unpacked\")
+        End If
+        Dim Form3 As New Form1
+        Dim x = WebCore.IsInitialized
+        If Not WebCore.IsInitialized Then
+            WebCore.Initialize(New WebConfig() With {
+                    .HomeURL = New Uri(My.Settings.Homepage),
+                    .RemoteDebuggingPort = 2229,
+                    .LogLevel = LogLevel.Verbose
+                })
+        End If
+        count = 0
+        While count = 0
+            Form3.ShowDialog()
+        End While
+        Dim y = WebCore.IsInitialized
+        For Each Dir As String In Directory.GetDirectories(folder & "\mods\")
+            Dim file = shPath(Dir)
+            Dim result = String.Compare(file, "Content")
+            If result > 0 Or result < 0 Then
+                If ModList.Items.Contains(file & ".dll") = False Then 'check to defend against double entries
+                    ModList.Items.Add(file & ".dll")
+                End If
+            End If
+        Next
+        ModList.Sorted = True
+        My.Computer.FileSystem.DeleteDirectory(appPath & "\unpacked\", FileIO.DeleteDirectoryOption.DeleteAllContents)
+        My.Computer.FileSystem.CreateDirectory(appPath & "\unpacked\")
     End Sub
 
     Private Sub delm_Click(sender As Object, e As EventArgs) Handles delm.Click
@@ -661,33 +702,32 @@ Public Class MainForm
                         System.IO.Directory.Delete(deldir, True)
                         ModListd.Items.Remove(mText)
                     End If
-                End If
-
-            Else
-                If Path.GetExtension(mText.ToString) = ".storm" Then
-                    Dim mnew = Path.GetFileNameWithoutExtension(mText.ToString)
-                    Dim split() = mnew.Split(".")
-                    ' MsgBox(split(0) & "." & split(1))
-                    If check = 0 Then
-                        deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & split(0)
-                        System.IO.Directory.Delete(deldir, True)
-                        ModList.Items.Remove(mText)
-                        INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\Storm.ini")
-                    Else
-                        deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & split(0) & "\"
-                        System.IO.Directory.Delete(deldir, True)
-                        ModListd.Items.Remove(mText)
-                        INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\Storm.ini")
-                    End If
                 Else
-                    deleteXNB(mText)
-                End If
+                    If Path.GetExtension(mText.ToString) = ".storm" Then
+                        Dim mnew = Path.GetFileNameWithoutExtension(mText.ToString)
+                        Dim split() = mnew.Split(".")
+                        ' MsgBox(split(0) & "." & split(1))
+                        If check = 0 Then
+                            deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & split(0)
+                            System.IO.Directory.Delete(deldir, True)
+                            ModList.Items.Remove(mText)
+                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\Storm.ini")
+                        Else
+                            deldir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & split(0) & "\"
+                            System.IO.Directory.Delete(deldir, True)
+                            ModListd.Items.Remove(mText)
+                            INI_WriteValueToFile("Storm", mText, Nothing, Application.UserAppDataPath & "\Storm.ini")
+                        End If
+                    Else
+                        deleteXNB(mText)
+                    End If
 
+                End If
+            Else
+                Exit Sub
             End If
-        Else
-            Exit Sub
+            ModList.Sorted = True : ModListd.Sorted = True
         End If
-        ModList.Sorted = True : ModListd.Sorted = True
     End Sub
 
     Private Sub ModListd_dc(sender As Object, e As EventArgs) Handles ModListd.DoubleClick
@@ -736,15 +776,16 @@ Public Class MainForm
                 ModList.Sorted = True : ModListd.Sorted = True
             Else
                 If Path.GetExtension(mText.ToString) = ".storm" Then
-                    Dim mnew = Path.GetFileNameWithoutExtension(mText.ToString)
-                    Dim split() = mnew.Split(".")
-                    Dim name = split(0) & "." & split(1)
-                    spath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & split(0) & "\"
-                    tpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & split(0) & "\"
-                    My.Computer.FileSystem.MoveDirectory(spath, tpath)
-                    ModList.Items.Remove(mText)
-                    ModListd.Items.Add(mText)
-                    ModList.Sorted = True : ModListd.Sorted = True
+                    MsgBox("Not possible", MsgBoxStyle.OkOnly)
+                    'Dim mnew = Path.GetFileNameWithoutExtension(mText.ToString)
+                    'Dim split() = mnew.Split(".")
+                    'Dim name = split(0) & "." & split(1)
+                    'spath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & split(0) & "\"
+                    'tpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & split(0) & "\"
+                    'My.Computer.FileSystem.MoveDirectory(spath, tpath)
+                    'ModList.Items.Remove(mText)
+                    ' ModListd.Items.Add(mText)
+                    '  ModList.Sorted = True : ModListd.Sorted = True
                 Else
                     MsgBox("Not yet possible, sorry!", MsgBoxStyle.Information)
                 End If
@@ -894,8 +935,8 @@ Public Class MainForm
     End Sub
 
 
-    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        Dim dlform As New Download
+    Private Sub Button2_Click(sender As Object, e As EventArgs)
+        Dim dlform As New D4ownload
         dlform.ShowDialog()
     End Sub
 
@@ -904,6 +945,18 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+
+    Private Sub Button2_Click_1(sender As Object, e As EventArgs) Handles Button2.Click
+        If MsgBox("Exit?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+            Close()
+        Else
+        End If
+
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs)
 
     End Sub
 End Class

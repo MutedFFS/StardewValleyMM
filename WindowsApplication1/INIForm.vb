@@ -55,8 +55,11 @@ Public Class INIForm
 
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Cancel.Click
+        MainForm.count = 1
         Close()
     End Sub
+
+
 
 
     Private Sub GogLabel_Click(sender As Object, e As EventArgs) Handles GogLabel.Click

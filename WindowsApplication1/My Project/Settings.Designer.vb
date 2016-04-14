@@ -53,6 +53,19 @@ Namespace My
                 Return defaultInstance
             End Get
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.WebServiceUrl),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("http://www.nexusmods.com/stardewvalley/mods/239/?")>  _
+        Public Property Homepage() As String
+            Get
+                Return CType(Me("Homepage"),String)
+            End Get
+            Set
+                Me("Homepage") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

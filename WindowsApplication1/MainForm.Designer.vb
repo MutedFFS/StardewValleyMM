@@ -182,7 +182,7 @@ Partial Class MainForm
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(655, 406)
+        Me.Button1.Location = New System.Drawing.Point(459, 406)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(75, 22)
         Me.Button1.TabIndex = 19
@@ -191,11 +191,11 @@ Partial Class MainForm
         '
         'Button2
         '
-        Me.Button2.Location = New System.Drawing.Point(600, 77)
+        Me.Button2.Location = New System.Drawing.Point(655, 406)
         Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(75, 23)
+        Me.Button2.Size = New System.Drawing.Size(75, 22)
         Me.Button2.TabIndex = 20
-        Me.Button2.Text = "Button2"
+        Me.Button2.Text = "Exit"
         Me.Button2.UseVisualStyleBackColor = True
         '
         'MainForm
@@ -228,7 +228,7 @@ Partial Class MainForm
         Me.MaximizeBox = False
         Me.MinimumSize = New System.Drawing.Size(500, 400)
         Me.Name = "MainForm"
-        Me.Text = "SDVMM V1.6e"
+        Me.Text = "SDVMM V2"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -240,9 +240,7 @@ Partial Class MainForm
     Friend WithEvents LSDV As System.Windows.Forms.Button
     Friend WithEvents dlm As System.Windows.Forms.Button
     Friend WithEvents delm As System.Windows.Forms.Button
-    Friend WithEvents ModList As System.Windows.Forms.ListBox
     Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents ModListd As System.Windows.Forms.ListBox
     Friend WithEvents dModList As System.Windows.Forms.Label
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents LabelSD As System.Windows.Forms.Label
@@ -251,5 +249,6 @@ Partial Class MainForm
     Friend WithEvents LStorm As System.Windows.Forms.Button
     Friend WithEvents Button1 As System.Windows.Forms.Button
     Friend WithEvents Button2 As System.Windows.Forms.Button
-
+    Friend WithEvents ModList As ListBox
+    Friend WithEvents ModListd As ListBox
 End Class

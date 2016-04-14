@@ -1,60 +1,96 @@
-﻿Public Class Download
-    Dim appPath As String = Application.StartupPath()
-    Dim mdir As New IO.DirectoryInfo(appPath & "\ModDB")
-    Dim diar As IO.FileInfo() = mdir.GetFiles("*.ini")
-    Dim dra As IO.FileInfo
-    Dim Name = ""
-    Dim Author = ""
-    Dim Version = ""
-    Dim Description = ""
-    Dim url = ""
-    Dim homepage = ""
+﻿Option Explicit On
+Imports System.ComponentModel
+Imports System.Net
+Imports System.IO
+Imports System.IO.Compression
+Imports System.Text
+Imports System.Web
+Imports WinHttp
+Imports Awesomium.Core
+Imports Awesomium.Windows.Forms
 
 
 
-    Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
+Public Class Form1
 
-    Private Declare Ansi Function WritePrivateProfileString Lib "kernel32.dll" Alias "WritePrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpString As String, ByVal lpFileName As String) As Int32
+    Dim spath = ""
+    Dim xnb As Boolean = False
+    Dim dll As Boolean = False
+    Dim x = ""
+    Dim y = ""
 
-    Private Function INI_ReadValueFromFile(ByVal strSection As String, ByVal strKey As String, ByVal strDefault As String, ByVal strFile As String) As String
-        'Reading Function 
-        'strSection = Section of the INI-File
-        'strKey = Name of the Key
-        'strDefault = Standardvalue if ini cant be foung
-        'strFile = full path to ini
-        Dim strTemp As String = Space(1024), lLength As Integer
-        lLength = GetPrivateProfileString(strSection, strKey, strDefault, strTemp, strTemp.Length, strFile)
-        Return (strTemp.Substring(0, lLength))
+
+    Private Sub Browser_Startup() Handles Me.Load
+
+        browser.Source = New Uri(My.Settings.Homepage)
+        AddHandler Awesomium.Core.WebCore.Download, AddressOf DownloadMethod
+    End Sub
+
+    Function browser_clsoe() Handles Me.Closing
+        If xnb = True And dll = False Then
+            Return True
+        Else
+            Return False
+        End If
     End Function
 
-    Sub download_startup() Handles Me.Load
-        Button1.Enabled = False
-        Button3.Enabled = False
-        ModInfo.ReadOnly = True
-        For Each dra In diar
-            Mods.Items.Add(dra.Name)
+    Private Sub DownloadMethod(ByVal sender As Object, ByVal e As Awesomium.Core.DownloadEventArgs)
+        e.Handled = True
+        Using client = New WebClient()
+            If e.Url.ToString.Contains(".zip") Then
+                client.DownloadFile(e.Url.ToString, MainForm.appPath & "\Mod.zip")
+                spath = MainForm.appPath & "\Mod.zip"
+            Else
+                client.DownloadFile(e.Url.ToString, MainForm.appPath & "\Mod.rar")
+                spath = MainForm.appPath & "\Mod.zip"
+            End If
+        End Using
+        MainForm.zip(spath, MainForm.appPath & "\unpacked\", 1, False)
+        For Each s In Directory.GetFiles(MainForm.appPath & "\unpacked\", "*.*", SearchOption.AllDirectories)
+            x = Path.GetDirectoryName(s)
+            y = MainForm.shPath(x)
+
+            If Path.GetExtension(s) = ".xnb" Then
+                xnb = True
+            Else
+                dll = True
+            End If
         Next
+        If xnb = True And dll = False Then
+            MainForm.xbo = True
+            For Each s In Directory.GetFiles(MainForm.appPath & "\unpacked\", "*.xnb", SearchOption.AllDirectories)
+                My.Computer.FileSystem.MoveDirectory(x & "\", MainForm.appPath & "\XNB\", True)
+            Next
+        Else
+            MsgBox(MainForm.ddir & y & "\")
+            If (Not IO.Directory.Exists(MainForm.Modfolder & "\" & y & "\")) Then
+                IO.Directory.CreateDirectory(MainForm.Modfolder & "\" & y & "\")
+            End If
+            My.Computer.FileSystem.MoveDirectory(x & "\", MainForm.Modfolder & "\" & y & "\", True)
+        End If
     End Sub
 
 
-    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Mods.SelectedIndexChanged
-        ModInfo.Clear()
-        Dim mindex = Mods.SelectedIndex
-        Dim mtext = ""
-        mtext = Mods.Items(mindex)
-        Name = INI_ReadValueFromFile("Data", "Name", "", appPath & "\ModDB\" & mtext)
-        Author = INI_ReadValueFromFile("Data", "Author", "", appPath & "\ModDB\" & mtext)
-        Version = INI_ReadValueFromFile("Data", "Version", "", appPath & "\ModDB\" & mtext)
-        Description = INI_ReadValueFromFile("Data", "Description", "", appPath & "\ModDB\" & mtext)
-        url = INI_ReadValueFromFile("Data", "url", "", appPath & "\ModDB\" & mtext)
-        homepage = INI_ReadValueFromFile("Data", "Homepage", "", appPath & "\ModDB\" & mtext)
-        ModInfo.AppendText("Name: " & Name & Environment.NewLine)
-        ModInfo.AppendText("Author: " & Author & Environment.NewLine)
-        ModInfo.AppendText("Version: " & Version & Environment.NewLine)
-        ModInfo.AppendText("Description: " & Description & Environment.NewLine)
-        Button1.Enabled = True
-        If homepage IsNot Nothing Then
-            Button3.Enabled = True
-        End If
+
+    Private Sub Back_Click(sender As Object, e As EventArgs) Handles Back.Click
+        browser.GoBack()
+    End Sub
+
+    Private Sub Forward_Click(sender As Object, e As EventArgs) Handles Forward.Click
+        browser.GoForward()
+    End Sub
+
+    Private Sub Home_Click(sender As Object, e As EventArgs) Handles Home.Click
+        browser.Source = New Uri("http://www.nexusmods.com/stardewvalley/?")
+    End Sub
+
+    Private Sub Close_Click(sender As Object, e As EventArgs) Handles btnClose.Click
+        MainForm.count = 1
+        browser.Dispose()
+        Close()
+    End Sub
+
+    Private Sub dend() Handles Me.Closed
+        MainForm.count = 1
     End Sub
 End Class
