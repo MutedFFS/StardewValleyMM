@@ -29,18 +29,31 @@ Partial Class MainForm
         Me.LSDV = New System.Windows.Forms.Button()
         Me.dlm = New System.Windows.Forms.Button()
         Me.delm = New System.Windows.Forms.Button()
-        Me.ModList = New System.Windows.Forms.ListBox()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.ModListd = New System.Windows.Forms.ListBox()
-        Me.dModList = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
         Me.LabelSD = New System.Windows.Forms.Label()
         Me.LabelSmapi = New System.Windows.Forms.Label()
         Me.ASM = New System.Windows.Forms.Button()
         Me.LStorm = New System.Windows.Forms.Button()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Button2 = New System.Windows.Forms.Button()
+        Me.Button3 = New System.Windows.Forms.Button()
+        Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
+        Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.Loadorder = New System.Windows.Forms.ListBox()
+        Me.up = New System.Windows.Forms.Button()
+        Me.Button4 = New System.Windows.Forms.Button()
+        Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.XNBlist = New System.Windows.Forms.ListBox()
+        Me.TabPage2 = New System.Windows.Forms.TabPage()
+        Me.ModList = New System.Windows.Forms.ListBox()
+        Me.ModListd = New System.Windows.Forms.ListBox()
+        Me.dModList = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.Tab = New System.Windows.Forms.TabControl()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.TabPage3.SuspendLayout()
+        Me.TabPage1.SuspendLayout()
+        Me.TabPage2.SuspendLayout()
+        Me.Tab.SuspendLayout()
         Me.SuspendLayout()
         '
         'PictureBox1
@@ -98,56 +111,10 @@ Partial Class MainForm
         Me.delm.Text = "Delete Mods"
         Me.delm.UseVisualStyleBackColor = True
         '
-        'ModList
-        '
-        Me.ModList.FormattingEnabled = True
-        Me.ModList.Location = New System.Drawing.Point(10, 177)
-        Me.ModList.Name = "ModList"
-        Me.ModList.Size = New System.Drawing.Size(210, 225)
-        Me.ModList.TabIndex = 8
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(160, 143)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(99, 16)
-        Me.Label1.TabIndex = 9
-        Me.Label1.Text = "Installed Mods"
-        '
-        'ModListd
-        '
-        Me.ModListd.FormattingEnabled = True
-        Me.ModListd.Location = New System.Drawing.Point(226, 177)
-        Me.ModListd.Name = "ModListd"
-        Me.ModListd.Size = New System.Drawing.Size(210, 225)
-        Me.ModListd.TabIndex = 10
-        '
-        'dModList
-        '
-        Me.dModList.AutoSize = True
-        Me.dModList.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.dModList.Location = New System.Drawing.Point(223, 159)
-        Me.dModList.Name = "dModList"
-        Me.dModList.Size = New System.Drawing.Size(108, 15)
-        Me.dModList.TabIndex = 11
-        Me.dModList.Text = "Deactivated Mods"
-        '
-        'Label3
-        '
-        Me.Label3.AutoSize = True
-        Me.Label3.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(7, 159)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(94, 15)
-        Me.Label3.TabIndex = 12
-        Me.Label3.Text = "Activated Mods"
-        '
         'LabelSD
         '
         Me.LabelSD.AutoSize = True
-        Me.LabelSD.Location = New System.Drawing.Point(12, 411)
+        Me.LabelSD.Location = New System.Drawing.Point(12, 428)
         Me.LabelSD.Name = "LabelSD"
         Me.LabelSD.Size = New System.Drawing.Size(106, 13)
         Me.LabelSD.TabIndex = 15
@@ -156,7 +123,7 @@ Partial Class MainForm
         'LabelSmapi
         '
         Me.LabelSmapi.AutoSize = True
-        Me.LabelSmapi.Location = New System.Drawing.Point(232, 411)
+        Me.LabelSmapi.Location = New System.Drawing.Point(232, 428)
         Me.LabelSmapi.Name = "LabelSmapi"
         Me.LabelSmapi.Size = New System.Drawing.Size(99, 13)
         Me.LabelSmapi.TabIndex = 16
@@ -182,7 +149,7 @@ Partial Class MainForm
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(459, 406)
+        Me.Button1.Location = New System.Drawing.Point(459, 423)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(75, 22)
         Me.Button1.TabIndex = 19
@@ -191,12 +158,147 @@ Partial Class MainForm
         '
         'Button2
         '
-        Me.Button2.Location = New System.Drawing.Point(655, 406)
+        Me.Button2.Location = New System.Drawing.Point(655, 423)
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(75, 22)
         Me.Button2.TabIndex = 20
         Me.Button2.Text = "Exit"
         Me.Button2.UseVisualStyleBackColor = True
+        '
+        'Button3
+        '
+        Me.Button3.Location = New System.Drawing.Point(548, 422)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(88, 23)
+        Me.Button3.TabIndex = 21
+        Me.Button3.Text = "Donate"
+        Me.Button3.UseVisualStyleBackColor = True
+        '
+        'ProgressBar1
+        '
+        Me.ProgressBar1.Location = New System.Drawing.Point(471, 110)
+        Me.ProgressBar1.Name = "ProgressBar1"
+        Me.ProgressBar1.Size = New System.Drawing.Size(259, 23)
+        Me.ProgressBar1.TabIndex = 22
+        '
+        'TabPage3
+        '
+        Me.TabPage3.Controls.Add(Me.Button4)
+        Me.TabPage3.Controls.Add(Me.up)
+        Me.TabPage3.Controls.Add(Me.Loadorder)
+        Me.TabPage3.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage3.Name = "TabPage3"
+        Me.TabPage3.Size = New System.Drawing.Size(435, 265)
+        Me.TabPage3.TabIndex = 2
+        Me.TabPage3.Text = "Load-Order"
+        Me.TabPage3.UseVisualStyleBackColor = True
+        '
+        'Loadorder
+        '
+        Me.Loadorder.FormattingEnabled = True
+        Me.Loadorder.Location = New System.Drawing.Point(17, 25)
+        Me.Loadorder.Name = "Loadorder"
+        Me.Loadorder.Size = New System.Drawing.Size(210, 225)
+        Me.Loadorder.TabIndex = 14
+        '
+        'up
+        '
+        Me.up.Location = New System.Drawing.Point(251, 25)
+        Me.up.Name = "up"
+        Me.up.Size = New System.Drawing.Size(90, 30)
+        Me.up.TabIndex = 15
+        Me.up.Text = "▲"
+        Me.up.UseVisualStyleBackColor = True
+        '
+        'Button4
+        '
+        Me.Button4.Location = New System.Drawing.Point(251, 220)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(90, 30)
+        Me.Button4.TabIndex = 16
+        Me.Button4.Text = "▼"
+        Me.Button4.UseVisualStyleBackColor = True
+        '
+        'TabPage1
+        '
+        Me.TabPage1.Controls.Add(Me.XNBlist)
+        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage1.Name = "TabPage1"
+        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage1.Size = New System.Drawing.Size(435, 265)
+        Me.TabPage1.TabIndex = 0
+        Me.TabPage1.Text = "XNB"
+        Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'XNBlist
+        '
+        Me.XNBlist.FormattingEnabled = True
+        Me.XNBlist.Location = New System.Drawing.Point(112, 22)
+        Me.XNBlist.Name = "XNBlist"
+        Me.XNBlist.Size = New System.Drawing.Size(210, 225)
+        Me.XNBlist.TabIndex = 14
+        '
+        'TabPage2
+        '
+        Me.TabPage2.Controls.Add(Me.Label3)
+        Me.TabPage2.Controls.Add(Me.dModList)
+        Me.TabPage2.Controls.Add(Me.ModListd)
+        Me.TabPage2.Controls.Add(Me.ModList)
+        Me.TabPage2.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage2.Name = "TabPage2"
+        Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage2.Size = New System.Drawing.Size(435, 265)
+        Me.TabPage2.TabIndex = 1
+        Me.TabPage2.Text = "SMAPI Mods"
+        Me.TabPage2.UseVisualStyleBackColor = True
+        '
+        'ModList
+        '
+        Me.ModList.FormattingEnabled = True
+        Me.ModList.Location = New System.Drawing.Point(6, 31)
+        Me.ModList.Name = "ModList"
+        Me.ModList.Size = New System.Drawing.Size(210, 225)
+        Me.ModList.TabIndex = 13
+        '
+        'ModListd
+        '
+        Me.ModListd.FormattingEnabled = True
+        Me.ModListd.Location = New System.Drawing.Point(222, 31)
+        Me.ModListd.Name = "ModListd"
+        Me.ModListd.Size = New System.Drawing.Size(210, 225)
+        Me.ModListd.TabIndex = 14
+        '
+        'dModList
+        '
+        Me.dModList.AutoSize = True
+        Me.dModList.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.dModList.Location = New System.Drawing.Point(219, 13)
+        Me.dModList.Name = "dModList"
+        Me.dModList.Size = New System.Drawing.Size(108, 15)
+        Me.dModList.TabIndex = 15
+        Me.dModList.Text = "Deactivated Mods"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Font = New System.Drawing.Font("Arial", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label3.Location = New System.Drawing.Point(3, 13)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(94, 15)
+        Me.Label3.TabIndex = 16
+        Me.Label3.Text = "Activated Mods"
+        '
+        'Tab
+        '
+        Me.Tab.AccessibleName = ""
+        Me.Tab.Controls.Add(Me.TabPage2)
+        Me.Tab.Controls.Add(Me.TabPage1)
+        Me.Tab.Controls.Add(Me.TabPage3)
+        Me.Tab.Location = New System.Drawing.Point(10, 135)
+        Me.Tab.Name = "Tab"
+        Me.Tab.SelectedIndex = 0
+        Me.Tab.Size = New System.Drawing.Size(443, 291)
+        Me.Tab.TabIndex = 23
         '
         'MainForm
         '
@@ -205,18 +307,16 @@ Partial Class MainForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.ClientSize = New System.Drawing.Size(739, 429)
+        Me.ClientSize = New System.Drawing.Size(734, 446)
+        Me.Controls.Add(Me.Tab)
+        Me.Controls.Add(Me.ProgressBar1)
+        Me.Controls.Add(Me.Button3)
         Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.LStorm)
         Me.Controls.Add(Me.ASM)
         Me.Controls.Add(Me.LabelSmapi)
         Me.Controls.Add(Me.LabelSD)
-        Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.dModList)
-        Me.Controls.Add(Me.ModListd)
-        Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.ModList)
         Me.Controls.Add(Me.delm)
         Me.Controls.Add(Me.dlm)
         Me.Controls.Add(Me.LSDV)
@@ -228,8 +328,13 @@ Partial Class MainForm
         Me.MaximizeBox = False
         Me.MinimumSize = New System.Drawing.Size(500, 400)
         Me.Name = "MainForm"
-        Me.Text = "SDVMM V2"
+        Me.Text = "SDVMM V2.1a      Smapi V0"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.TabPage3.ResumeLayout(False)
+        Me.TabPage1.ResumeLayout(False)
+        Me.TabPage2.ResumeLayout(False)
+        Me.TabPage2.PerformLayout()
+        Me.Tab.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -240,15 +345,24 @@ Partial Class MainForm
     Friend WithEvents LSDV As System.Windows.Forms.Button
     Friend WithEvents dlm As System.Windows.Forms.Button
     Friend WithEvents delm As System.Windows.Forms.Button
-    Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents dModList As System.Windows.Forms.Label
-    Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents LabelSD As System.Windows.Forms.Label
     Friend WithEvents LabelSmapi As System.Windows.Forms.Label
     Friend WithEvents ASM As System.Windows.Forms.Button
     Friend WithEvents LStorm As System.Windows.Forms.Button
     Friend WithEvents Button1 As System.Windows.Forms.Button
     Friend WithEvents Button2 As System.Windows.Forms.Button
-    Friend WithEvents ModList As ListBox
+    Friend WithEvents Button3 As Button
+    Friend WithEvents ProgressBar1 As ProgressBar
+    Friend WithEvents TabPage3 As TabPage
+    Friend WithEvents Button4 As Button
+    Friend WithEvents up As Button
+    Friend WithEvents Loadorder As ListBox
+    Friend WithEvents TabPage1 As TabPage
+    Friend WithEvents XNBlist As ListBox
+    Friend WithEvents TabPage2 As TabPage
+    Friend WithEvents Label3 As Label
+    Friend WithEvents dModList As Label
     Friend WithEvents ModListd As ListBox
+    Friend WithEvents ModList As ListBox
+    Friend WithEvents Tab As TabControl
 End Class

@@ -1,6 +1,5 @@
 ﻿Imports System.IO
 
-
 Module Main
 
     Dim appPath As String = Application.StartupPath()
@@ -93,6 +92,9 @@ Module Main
                     End If
                 End If
             Next
+        End If
+        If (Not System.IO.Directory.Exists(appPath & "\unpacked\")) Then
+            System.IO.Directory.CreateDirectory(appPath & "\unpacked\")
         End If
         errcode = 11
         Application.EnableVisualStyles()

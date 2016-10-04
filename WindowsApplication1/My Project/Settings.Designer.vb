@@ -57,7 +57,7 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.WebServiceUrl),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://www.nexusmods.com/stardewvalley/mods/239/?")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("http://www.nexusmods.com/stardewvalley/?")>  _
         Public Property Homepage() As String
             Get
                 Return CType(Me("Homepage"),String)
