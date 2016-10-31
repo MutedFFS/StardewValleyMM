@@ -1,24 +1,18 @@
 ﻿Option Explicit On
-Imports System.ComponentModel
 Imports System.Net
 Imports System.IO
-Imports System.IO.Compression
-Imports System.Text
-Imports System.Web
-Imports WinHttp
-Imports Awesomium.Core
-Imports Awesomium.Windows.Forms
 
 
 
 Public Class Form1
+
 
     Dim spath = ""
     Dim xnb As Boolean = False
     Dim dll As Boolean = False
     Dim x = ""
     Dim y = ""
-
+    Dim number = MainForm.loadorderc + 1
 
     Private Sub Browser_Startup() Handles Me.Load
 
@@ -42,7 +36,7 @@ Public Class Form1
                 spath = MainForm.appPath & "\Mod.zip"
             Else
                 client.DownloadFile(e.Url.ToString, MainForm.appPath & "\Mod.rar")
-                spath = MainForm.appPath & "\Mod.zip"
+                spath = MainForm.appPath & "\Mod.rar"
             End If
         End Using
         MainForm.zip(spath, MainForm.appPath & "\unpacked\", 1, False)
@@ -62,12 +56,13 @@ Public Class Form1
                 My.Computer.FileSystem.MoveDirectory(x & "\", MainForm.appPath & "\XNB\", True)
             Next
         Else
-            MsgBox(MainForm.ddir & y & "\")
+            '  MsgBox(MainForm.ddir & y & "\")
             If (Not IO.Directory.Exists(MainForm.Modfolder & "\" & y & "\")) Then
                 IO.Directory.CreateDirectory(MainForm.Modfolder & "\" & y & "\")
             End If
-            My.Computer.FileSystem.MoveDirectory(x & "\", MainForm.Modfolder & "\" & y & "\", True)
+            My.Computer.FileSystem.MoveDirectory(x & "\", MainForm.Modfolder & "\" & number & "-" & y & "\", True)
         End If
+        MsgBox("Downlaod and Instaltion done!")
     End Sub
 
 

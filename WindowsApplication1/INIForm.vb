@@ -4,7 +4,6 @@ Public Class INIForm
     Dim folder = INI_ReadValueFromFile("General", "GameFolder", "C:\", Application.UserAppDataPath & "\SDVMM.ini")
     Dim Sfolder = INI_ReadValueFromFile("General", "SteamFolder", "C:\", Application.UserAppDataPath & "\SDVMM.ini")
     Dim gog = INI_ReadValueFromFile("General", "Good Old Game Version", 0, Application.UserAppDataPath & "\SDVMM.ini")
-    Dim Modfolder = INI_ReadValueFromFile("General", "ModFolder", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\", Application.UserAppDataPath & "\SDVMM.ini")
     Dim rchannel = INI_ReadValueFromFile("General", "Release Channel", "Stable", Application.UserAppDataPath & "\SDVMM.ini")
 
     Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
@@ -46,11 +45,6 @@ Public Class INIForm
         TextGfolder.Text = folder
         TextSFolder.Text = Sfolder
         channel.Text = rchannel
-        If Modfolder = folder & "\Mods" Then
-            mflabel.Text = "Stardew Valley Folder"
-        Else
-            mflabel.Text = "AppData"
-        End If
     End Sub
 
 
@@ -88,7 +82,7 @@ Public Class INIForm
         INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath & "\SDVMM.ini")
         INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVMM.ini")
         INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVMM.ini")
-        INI_WriteValueToFile("General", "ModFolder", Modfolder, Application.UserAppDataPath & "\SDVMM.ini")
+        INI_WriteValueToFile("General", "folder", folder, Application.UserAppDataPath & "\SDVMM.ini")
         INI_WriteValueToFile("General", "Release Channel", rchannel, Application.UserAppDataPath & "\SDVMM.ini")
         Close()
     End Sub
@@ -163,25 +157,7 @@ Public Class INIForm
         Process.Start(Application.UserAppDataPath)
     End Sub
 
-    Private Sub Label2_Click(sender As Object, e As EventArgs) Handles mflabel.Click
-        If mflabel.Text = "AppData" Then
-            mflabel.Text = "Stardew Valled Folder"
-            Modfolder = folder & "\Mods"
-        Else
-            mflabel.Text = "AppData"
-            Modfolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods"
-        End If
-    End Sub
 
-    Private Sub mfolder_Click(sender As Object, e As EventArgs) Handles mfolder.Click
-        If mflabel.Text = "AppData" Then
-            mflabel.Text = "Stardew Valley Folder"
-            Modfolder = folder & "\Mods"
-        Else
-            mflabel.Text = "AppData"
-            Modfolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods"
-        End If
-    End Sub
 
     Private Sub channel_Click(sender As Object, e As EventArgs) Handles channel.Click
         If channel.Text = "Stable" Then

@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Homepage" Type="(Web Service URL)" Scope="User">
-      <Value Profile="(Default)">http://www.nexusmods.com/stardewvalley/mods/239/?</Value>
+      <Value Profile="(Default)">http://www.nexusmods.com/stardewvalley/?</Value>
     </Setting>
   </Settings>
 </SettingsFile>
