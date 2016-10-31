@@ -34,7 +34,7 @@ Public Class MainForm
     Public Shared Sfolder = "C:\"
     Public Shared gog = 0
     Public Shared cSVersion = "0"
-    Public Shared cVersion = "2.7"
+    Public Shared cVersion = "2.7a"
     Dim notFound = 0
     Dim Skip = 0
     Shared errorlv = 0
@@ -803,7 +803,7 @@ Public Class MainForm
                                     deldir = folder & "\Mods\"
                                 End If
                             End If
-                            System.IO.Directory.Delete(deldir, True)
+                            System.IO.Directory.Delete(deldir & Path.GetFileNameWithoutExtension(mText.ToString) & "\", True)
                             Dim oldNumber = Loadorder.Items.Count
                             ModList.Items.Remove(mText)
                             Loadorder.Items.Remove(mText)
