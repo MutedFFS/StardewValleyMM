@@ -22,10 +22,8 @@ Public Class MainForm
     Public Shared ddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\"
     Public Shared xa() As String = {}
     Public Shared count As Integer = 0
-    Dim smdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods")
     Dim dmdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
     Dim xmdir As New IO.DirectoryInfo(appPath & "\Backup")
-    Dim diar1 As IO.FileInfo() = smdir.GetFiles("*.dll")
     Dim diar2 As IO.FileInfo() = dmdir.GetFiles("*.dll")
     Dim diar3 As IO.FileInfo() = xmdir.GetFiles("*.xnb")
     Dim dra As IO.FileInfo
@@ -415,11 +413,6 @@ Public Class MainForm
         ModList.Items.Clear() ' clea the modlists. While they should be empty anyways i still want to be sure
         ModListd.Items.Clear()
         Loadorder.Items.Clear()
-        For Each dra In diar1 ' reads all smapi dlls.
-            If ModList.Items.Contains(dra) = False Then 'check to defend against double entries
-                ModList.Items.Add(dra)
-            End If
-        Next
         Dim result = 0
         Dim number As Integer = 1
         For Each Dir As String In Directory.GetDirectories(folder & "\mods\")
@@ -603,7 +596,7 @@ Public Class MainForm
                                 End If
                             Else
                                 If ext = ".dll" Then
-                                    tdir = ddir & number & "-" & Path.GetFileNameWithoutExtension(s) & "\" ' & Path.GetFileName(s)
+                                    tdir = ddir & "\Mods\" & number & "-" & Path.GetFileNameWithoutExtension(s) & "\" ' & Path.GetFileName(s)
                                     Dim paths = Path.GetDirectoryName(s)
                                     number = Loadorder.Items.Count + 1
                                     '        MsgBox(number)
