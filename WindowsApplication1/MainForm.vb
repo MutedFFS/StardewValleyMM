@@ -32,7 +32,7 @@ Public Class MainForm
     Public Shared Sfolder = "C:\"
     Public Shared gog = 0
     Public Shared cSVersion = "0"
-    Public Shared cVersion = "2.7a"
+    Public Shared cVersion = "2.8"
     Dim notFound = 0
     Dim Skip = 0
     Shared errorlv = 0
@@ -105,10 +105,9 @@ Public Class MainForm
             For Each Dir As String In Directory.GetDirectories(appPath & "\Update\")
                 cfolder = shPath(Dir)
             Next
-            x = appPath & "\Update\" & cfolder '& "\Mods\"
-            y = folder & "\Mods\"
+            x = appPath & "\Update\" & cfolder & "\" & cfolder & "\Windows\"
+            y = folder '& "\Mods\"
             My.Computer.FileSystem.MoveDirectory(x, y, True)
-            My.Computer.FileSystem.MoveFile(appPath & "\Update\StardewModdingAPI.exe", folder & "\StardewModdingAPI.exe", True)
             errorlv = 3
             System.IO.Directory.Delete(appPath & "\Update\", True)
             errorlv = 4
@@ -119,27 +118,7 @@ Public Class MainForm
                 System.IO.Directory.CreateDirectory(appPath & "\Update\")
             End While
         Catch Ex As Exception
-            Try
-                For Each Dir As String In Directory.GetDirectories(appPath & "\Update\")
-                    cfolder = shPath(Dir)
-                Next
-                x = appPath & "\Update\" & cfolder & "\Mods\"
-                y = folder & "\Mods\"
-                My.Computer.FileSystem.MoveDirectory(x, y, True)
-                My.Computer.FileSystem.MoveFile(appPath & "\Update\" & cfolder & "\StardewModdingAPI.exe", folder & "\StardewModdingAPI.exe", True)
-                errorlv = 3
-                System.IO.Directory.Delete(appPath & "\Update\", True)
-                errorlv = 4
-                System.IO.Directory.CreateDirectory(appPath & "\Update\")
-                errorlv = 5
-                While (Not System.IO.Directory.Exists(appPath & "\Update\"))
-                    errorlv = 6
-                    System.IO.Directory.CreateDirectory(appPath & "\Update\")
-                End While
-            Catch ex2 As Exception
-                MessageBox.Show(ex2.ToString)
-            End Try
-
+            MessageBox.Show(Ex.ToString)
         End Try
     End Function
 
@@ -637,53 +616,6 @@ Public Class MainForm
         refresh.PerformClick()
     End Sub
 
-    Private Sub ASM_Click(sender As Object, e As EventArgs) Handles ASM.Click
-        Exit Sub
-        Dim myStream As Stream = Nothing
-        Dim openFileDialog1 As New OpenFileDialog()
-        openFileDialog1.InitialDirectory = "c:\"
-        openFileDialog1.Filter = "Storm Mod files (*.dll)|*.dll"
-        openFileDialog1.FilterIndex = 2
-        openFileDialog1.Title = "Select Storm-Mod"
-        openFileDialog1.RestoreDirectory = True
-        openFileDialog1.Multiselect = False
-        If openFileDialog1.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
-            Try
-                myStream = openFileDialog1.OpenFile()
-                If myStream IsNot Nothing Then
-                    Dim Folder = Path.GetDirectoryName(openFileDialog1.FileName) & "\"
-                    ddir = ddir & Path.GetFileNameWithoutExtension(openFileDialog1.FileName) & "\"
-                    Dim fname = Path.GetFileName(openFileDialog1.FileName)
-                    If (Not IO.Directory.Exists(ddir)) Then
-                        IO.Directory.CreateDirectory(ddir)
-                    End If
-                    For Each s In Directory.GetFiles(Folder, "*.*", SearchOption.TopDirectoryOnly)
-                        Dim sname = Path.GetFileName(s)
-                        My.Computer.FileSystem.CopyFile(s, ddir & sname, True)
-                    Next
-                    My.Computer.FileSystem.CopyDirectory(Folder, ddir, True)
-                    'My.Computer.FileSystem.DeleteDirectory(Folder, FileIO.DeleteDirectoryOption.DeleteAllContents)
-                    Dim addname = fname & ".storm"
-                    ' MsgBox(Path.GetExtension(addname))
-                    ' MsgBox(addname)
-                    If ModList.Items.Contains(Path.GetFileName(addname)) = False Then
-                        ModList.Items.Add(Path.GetFileName(addname))
-                    End If
-                    INI_WriteValueToFile("Storm", addname, fname, Application.UserAppDataPath & "\Storm.ini")
-                End If
-
-
-            Catch Ex As Exception
-                MessageBox.Show("Cannot read file from disk! Please restart SDVMM and try again.")
-            Finally
-                ' Check this again, since we need to make sure we didn't throw an exception on open.
-                If (myStream IsNot Nothing) Then
-                    myStream.Close()
-                End If
-            End Try
-        End If
-    End Sub
-
 
     Private Sub client_ProgressChanged(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
         Dim bytesIn As Double = Double.Parse(e.BytesReceived.ToString())
@@ -708,6 +640,8 @@ Public Class MainForm
 
     Private Sub dlm_Click(sender As Object, e As EventArgs) Handles dlm.Click
         MsgBox("Feature is being reworked!", MsgBoxStyle.OkOnly)
+        '  Dim Form2 As New Webrowser
+        '  Form2.ShowDialog()
         'If System.IO.Directory.Exists(appPath & "\unpacked\",) Then
         '    My.Computer.FileSystem.DeleteDirectory(appPath & "\unpacked\", FileIO.DeleteDirectoryOption.DeleteAllContents)
         '    My.Computer.FileSystem.CreateDirectory(appPath & "\unpacked\")
@@ -811,11 +745,7 @@ Public Class MainForm
                                 Dim value As String = help + 2
                                 Dim param() As String = mText.Split(value)
                                 Dim mmir As String = ""
-                                If IO.File.Exists(folder & "\Mods\" & Path.GetFileNameWithoutExtension(mText.ToString) & "\" & mText.ToString) Then
-                                    mmir = folder & "\Mods\" & Path.GetFileNameWithoutExtension(mText.ToString) & "\"
-                                Else
-                                    mmir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & Path.GetFileNameWithoutExtension(mText.ToString) & "\"
-                                End If
+                                mmir = folder & "\Mods\" & Path.GetFileNameWithoutExtension(mText.ToString) & "\"
                                 Dim ndir As String = deldir & help + 1 & Path.GetFileNameWithoutExtension(param(1)) & "\"
                                 My.Computer.FileSystem.MoveDirectory(mmir, ndir, True)
                                 ModList.Items.Add(help + 1 & param(1))
@@ -898,28 +828,10 @@ Public Class MainForm
                 ModListd.Items.Add(mText)
                 ModList.Sorted = True : ModListd.Sorted = True
             Else
-                If Path.GetExtension(mText.ToString) = ".storm" Then
-                    MsgBox("Not possible", MsgBoxStyle.OkOnly)
-                    'Dim mnew = Path.GetFileNameWithoutExtension(mText.ToString)
-                    'Dim split() = mnew.Split(".")
-                    'Dim name = split(0) & "." & split(1)
-                    'spath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\Mods\" & split(0) & "\"
-                    'tpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\" & split(0) & "\"
-                    'My.Computer.FileSystem.MoveDirectory(spath, tpath)
-                    'ModList.Items.Remove(mText)
-                    ' ModListd.Items.Add(mText)
-                    '  ModList.Sorted = True : ModListd.Sorted = True
-                Else
-                    MsgBox("Not yet possible, sorry!", MsgBoxStyle.Information)
-                End If
-
+                MsgBox("Not yet possible, sorry!", MsgBoxStyle.Information)
             End If
         End If
     End Sub
-
-    '   Private Sub md(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ModList.MouseDown
-    'Exit Sub
-    ' End Sub
 
     Private Sub XNBList_md(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles XNBlist.MouseDoubleClick
         '  MsgBox("hi")
@@ -985,9 +897,9 @@ Public Class MainForm
                         Dim line As String = reader.ReadLine()
                         If line.Contains("/ClxS/SMAPI/releases/download/") Then
                             Dim param() As String = line.Split("/")
-                            Dim param2() As String = param(6).Split("""")
-                            nurl = "https://github.com/ClxS/SMAPI/releases/download/" + param(5) + "/" + param2(0)
-                            version = param(5)
+                            Dim param2() As String = param(8).Split("""")
+                            nurl = "https://github.com/ClxS/SMAPI/releases/download/" + param(7) + "/" + param2(0)
+                            version = param(7)
                             Exit While
                         End If
                     End While
@@ -1004,7 +916,9 @@ Public Class MainForm
                         c = 11
                         IO.File.Move(appPath & "\" & fname, appPath & "\Update\" & fname)
                         INI_WriteValueToFile("SMAPI Details", "Version", fnameoe, Application.UserAppDataPath & "\SDVMM.ini")
-                        zip(appPath & "\Update\" & fname, appPath & "\Update\", 1, True)
+                        Dim from As String = appPath & "\Update\" & fname
+                        Dim fto As String = appPath & "\Update\" & fnameoe & "\"
+                        zip(from, fto, 1, True)
                         cSVersion = INI_ReadValueFromFile("SMAPI Details", "Version", "SMAPI-0.37.1A", Application.UserAppDataPath & "\SDVMM.ini")
                         cSVersion = version
                         INI_WriteValueToFile("SMAPI Details", "Version", version, Application.UserAppDataPath & "\SDVMM.ini")
@@ -1181,8 +1095,13 @@ Public Class MainForm
         End If
     End Sub
 
+    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles openModFolder.Click
+        Process.Start(folder + "/Mods/")
+    End Sub
 
-
+    Private Sub Button6_Click(sender As Object, e As EventArgs) Handles openDFolder.Click
+        Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods\")
+    End Sub
 End Class
 
 

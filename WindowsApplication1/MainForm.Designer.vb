@@ -50,6 +50,8 @@ Partial Class MainForm
         Me.ModListd = New System.Windows.Forms.ListBox()
         Me.ModList = New System.Windows.Forms.ListBox()
         Me.Tab = New System.Windows.Forms.TabControl()
+        Me.openModFolder = New System.Windows.Forms.Button()
+        Me.openDFolder = New System.Windows.Forms.Button()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage3.SuspendLayout()
         Me.TabPage1.SuspendLayout()
@@ -241,6 +243,8 @@ Partial Class MainForm
         '
         'TabPage2
         '
+        Me.TabPage2.Controls.Add(Me.openDFolder)
+        Me.TabPage2.Controls.Add(Me.openModFolder)
         Me.TabPage2.Controls.Add(Me.refresh)
         Me.TabPage2.Controls.Add(Me.Label3)
         Me.TabPage2.Controls.Add(Me.dModList)
@@ -311,6 +315,24 @@ Partial Class MainForm
         Me.Tab.Size = New System.Drawing.Size(443, 291)
         Me.Tab.TabIndex = 23
         '
+        'openModFolder
+        '
+        Me.openModFolder.Location = New System.Drawing.Point(6, 236)
+        Me.openModFolder.Name = "openModFolder"
+        Me.openModFolder.Size = New System.Drawing.Size(75, 23)
+        Me.openModFolder.TabIndex = 18
+        Me.openModFolder.Text = "Open Folder"
+        Me.openModFolder.UseVisualStyleBackColor = True
+        '
+        'openDFolder
+        '
+        Me.openDFolder.Location = New System.Drawing.Point(354, 236)
+        Me.openDFolder.Name = "openDFolder"
+        Me.openDFolder.Size = New System.Drawing.Size(75, 23)
+        Me.openDFolder.TabIndex = 19
+        Me.openDFolder.Text = "Open Folder"
+        Me.openDFolder.UseVisualStyleBackColor = True
+        '
         'MainForm
         '
         Me.AccessibleName = "FoundMods"
@@ -377,4 +399,6 @@ Partial Class MainForm
     Friend WithEvents ModList As ListBox
     Friend WithEvents Tab As TabControl
     Friend WithEvents refresh As Button
+    Friend WithEvents openDFolder As Button
+    Friend WithEvents openModFolder As Button
 End Class
