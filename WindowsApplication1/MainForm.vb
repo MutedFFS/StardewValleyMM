@@ -24,8 +24,8 @@ Public Class MainForm
     Public Shared count As Integer = 0
     Dim dmdir As New IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\StardewValley\deactivatedMods")
     Dim xmdir As New IO.DirectoryInfo(appPath & "\Backup")
-    Dim diar2 As IO.FileInfo() = dmdir.GetFiles("*.dll")
-    Dim diar3 As IO.FileInfo() = xmdir.GetFiles("*.xnb")
+    Dim diar2 As IO.FileInfo() = dmdir.GetFiles("*.dll") 'Scans for all existing mods
+    Dim diar3 As IO.FileInfo() = xmdir.GetFiles("*.xnb") 'Scams for all existing xnb files
     Dim dra As IO.FileInfo
     Dim check1 = 0
     Public Shared folder = "C:\"
@@ -99,14 +99,14 @@ Public Class MainForm
 
     Shared Function Update()
         Dim cfolder = ""
-        Dim x = ""
-        Dim y = ""
+        Dim from = ""
+        Dim MoveTo = ""
         Try
             For Each Dir As String In Directory.GetDirectories(appPath & "\Update\")
                 cfolder = shPath(Dir)
             Next
-            x = appPath & "\Update\" & cfolder & "\" & cfolder & "\Windows\"
-            y = folder '& "\Mods\"
+            from = appPath & "\Update\" & cfolder & "\" & cfolder & "\Windows\"
+            moveTo = folder '& "\Mods\"
             My.Computer.FileSystem.MoveDirectory(x, y, True)
             errorlv = 3
             System.IO.Directory.Delete(appPath & "\Update\", True)
