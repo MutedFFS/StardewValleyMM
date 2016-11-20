@@ -32,7 +32,7 @@ Public Class MainForm
     Public Shared Sfolder = "C:\"
     Public Shared gog = 0
     Public Shared cSVersion = "0"
-    Public Shared cVersion = "2.8"
+    Public Shared cVersion = "2.8a"
     Dim notFound = 0
     Dim Skip = 0
     Shared errorlv = 0
@@ -106,16 +106,21 @@ Public Class MainForm
                 cfolder = shPath(Dir)
             Next
             from = appPath & "\Update\" & cfolder & "\" & cfolder & "\Windows\"
-            moveTo = folder '& "\Mods\"
-            My.Computer.FileSystem.MoveDirectory(x, y, True)
+            MoveTo = folder '& "\Mods\"
+            If Not File.Exists(MoveTo & "\Stardew Valley.exe") Then
+                MsgBox("The Gamepath doesnt seem to be correct, please check the settings.", MsgBoxStyle.OkOnly)
+                Dim IniF As New INIForm
+                IniF.ShowDialog()
+            End If
+            My.Computer.FileSystem.MoveDirectory(from, MoveTo, True)
             errorlv = 3
-            System.IO.Directory.Delete(appPath & "\Update\", True)
+            System.IO.Directory.Delete(appPath & " \Update \ ", True)
             errorlv = 4
-            System.IO.Directory.CreateDirectory(appPath & "\Update\")
+            System.IO.Directory.CreateDirectory(appPath & " \Update \ ")
             errorlv = 5
-            While (Not System.IO.Directory.Exists(appPath & "\Update\"))
+            While (Not System.IO.Directory.Exists(appPath & " \Update \ "))
                 errorlv = 6
-                System.IO.Directory.CreateDirectory(appPath & "\Update\")
+                System.IO.Directory.CreateDirectory(appPath & " \Update \ ")
             End While
         Catch Ex As Exception
             MessageBox.Show(Ex.ToString)
@@ -129,10 +134,10 @@ Public Class MainForm
             Form.ShowDialog()
         End If
         'Parse folder from form
-        Dim xtpath = XNBForm.XtFolder & "\" & Fname
-        Dim name = shPath(XNBForm.XtFolder) & "-" & Fname
-        If (Not IO.File.Exists(appPath & "\Backup\" & name)) Then
-            My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
+        Dim xtpath = XNBForm.XtFolder & " \ " & Fname
+        Dim name = shPath(XNBForm.XtFolder) & " - " & Fname
+        If (Not IO.File.Exists(appPath & " \ Backup \ " & name)) Then
+            My.Computer.FileSystem.MoveFile(xtpath, appPath & " \ Backup \ " & name, True)
         End If
         IO.File.Copy(xspath, xtpath, True)
         INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\XNB.ini")
@@ -175,7 +180,7 @@ Public Class MainForm
         Try
             Dim Update As New XmlDocument()
             If prel = False Then
-                Update.Load("http://sdvmm.mirror-realms.com/Release/Update.xml")
+                Update.Load("http: //sdvmm.mirror-realms.com/Release/Update.xml")
             Else
                 Update.Load("http://sdvmm.mirror-realms.com/Pre-Release/Update.xml")
             End If
