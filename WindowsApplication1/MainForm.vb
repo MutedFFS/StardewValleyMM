@@ -10,6 +10,7 @@ Imports System.Xml
 Imports System.Diagnostics
 Imports System.Security.Cryptography
 Imports Microsoft.VisualBasic.ApplicationServices
+Imports Newtonsoft.Json
 
 Public Class MainForm
     Public Shared loadorderc As String = 0
@@ -168,32 +169,55 @@ Public Class MainForm
     Public Shared SHAcheck As String
     Public Event UnhandledException(sender As Object, e As UnhandledExceptionEventArgs)
 
+    Public Class GitRelease
+        Public Property tag_name As String
+        Public Property name As String
+        Public Property body As String
+        Public Property assets As GitAsset()
+    End Class
+
+    Public Class GitAsset
+        Public Property name As String
+        Public Property content_type As String
+        Public Property browser_download_url As String
+    End Class
+
+    Shared Durl = ""
+
     Public Shared Function CheckVersion(Version As String) As Boolean
-        'Delete old Updater.exe
-        If File.Exists("Updater.exe") Then
-            File.Delete("Updater.exe")
-        End If
-        If File.Exists("Update.bat") Then
-            File.Delete("Update.bat")
-        End If
-        'Delete Old EXE's Now there is a standard
-        Try
-            Dim Update As New XmlDocument()
-            If prel = False Then
-                Update.Load("http: //sdvmm.mirror-realms.com/Release/Update.xml")
-            Else
-                Update.Load("http://sdvmm.mirror-realms.com/Pre-Release/Update.xml")
-            End If
-            Dim Update_Version As String = Update.SelectSingleNode("/info/Version").InnerText
-            SHAcheck = Update.SelectSingleNode("/info/sha").InnerText
-            If Update_Version > Version Then
-                Return True
-            Else
+        If My.Computer.Network.IsAvailable Then
+            Try
+                'Delete old Updater.exe
+                If File.Exists("Updater.exe") Then
+                    File.Delete("Updater.exe")
+                End If
+                If File.Exists("Update.bat") Then
+                    File.Delete("Update.bat")
+                End If
+                If File.Exists((MainForm.appPath & "\latest.json")) Then
+                    File.Delete((MainForm.appPath & "\latest.json"))
+                End If
+                Dim jsonpath As String = (MainForm.appPath & "\latest.json")
+                Dim client As New WebClient
+                client.Headers.Item("User-Agent") = "Mozilla/4.0"
+                client.DownloadFile("https://api.github.com/repos/yuukiw/StardewValleyMM/releases/latest", jsonpath)
+                Dim stream As Stream = client.OpenRead(jsonpath)
+                Dim reader As New StreamReader(stream)
+                Dim jsonData As String = reader.ReadToEnd
+                reader.Close()
+
+                Dim release As GitRelease = JsonConvert.DeserializeObject(Of GitRelease)(jsonData)
+                Dim Update_Version = release.tag_name
+                Durl = release.assets(0).browser_download_url
+                If Update_Version > Version Then
+                    Return True
+                Else
+                    Return False
+                End If
+            Catch
                 Return False
-            End If
-        Catch
-            Return False
-        End Try
+            End Try
+        End If
     End Function
 
     Public Shared Function checkSHA(Path As String) As Boolean
@@ -210,27 +234,18 @@ Public Class MainForm
         End If
     End Function
 
+
     Public Shared Sub DownloadUpdate()
-        Using client = New WebClient()
-            If prel = False Then
-                client.DownloadFile("http://sdvmm.mirror-realms.com/Release/Update.exe", "Updater.exe")
-            Else
-                client.DownloadFile("http://sdvmm.mirror-realms.com/Pre-Release/Update.exe", "Updater.exe")
-            End If
-            client.DownloadFile("http://sdvmm.mirror-realms.com/Update.bat", "Update.bat")
-        End Using
-        If checkSHA("Updater.exe") Then
-            Dim Updater As New Process()
-            Updater.StartInfo.FileName = "Update.bat"
-            Updater.Start()
-            Application.Exit()
-        Else
-            Dim result = MessageBox.Show("Something Went Wrong with the Update.", "Update Failed...", MessageBoxButtons.RetryCancel)
-            If result = DialogResult.Retry Then
-                DownloadUpdate()
-            End If
-        End If
+        Dim startInfo As New ProcessStartInfo With {
+            .FileName = (MainForm.appPath & "\SDVMM Updater.exe"),
+            .Arguments = MainForm.Durl,
+            .UseShellExecute = True,
+            .WindowStyle = ProcessWindowStyle.Normal
+        }
+        Process.Start(startInfo)
+        Application.Exit()
     End Sub
+
 
 
 
@@ -308,12 +323,19 @@ Public Class MainForm
         LStorm.Enabled = False
         LStorm.Hide()
 
+        If (Not System.IO.File.Exists(appPath & "\SDVMM Updater.exe")) Then
+            Dim client As New WebClient
+            client.Headers.Item("User-Agent") = "Mozilla/4.0"
+            client.DownloadFile("https://drive.google.com/uc?export=download&id=0B94u0_R6vixWUy12RVpJN1NkWlU", appPath & "\SDVMM Updater.exe")
+        End If
+
         If CheckVersion(cVersion) = True Then
             If MsgBox("SDVMM Update found. Install now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
                 DownloadUpdate()
             End If
         End If
-        'fixing name error
+
+        'fixing name Error
         If (Not System.IO.File.Exists(Application.UserAppDataPath & "\SDVMM.ini")) Then
             Dim spath As String = "Program Files (x86)\Steam\steamapps\common\Stardew Valley"
             Dim sspath As String = "Program Files (x86)\Steam\"
@@ -889,26 +911,22 @@ Public Class MainForm
             End If
 
             If My.Computer.Network.IsAvailable Then
-                If IO.File.Exists(appPath & "\new.txt") Then
-                    IO.File.Delete(appPath & "\new.txt")
+                If File.Exists((MainForm.appPath & "\latest.json")) Then
+                    File.Delete((MainForm.appPath & "\latest.json"))
                 End If
-                Dim url = "https://github.com/ClxS/SMAPI/releases/latest"
-                Dim myWebClient1 As New WebClient()
-                myWebClient1.DownloadFile(url, "new.txt")
-                Dim nurl = ""
-                Dim version = ""
-                Using reader As New StreamReader("new.txt")
-                    While Not reader.EndOfStream
-                        Dim line As String = reader.ReadLine()
-                        If line.Contains("/ClxS/SMAPI/releases/download/") Then
-                            Dim param() As String = line.Split("/")
-                            Dim param2() As String = param(8).Split("""")
-                            nurl = "https://github.com/ClxS/SMAPI/releases/download/" + param(7) + "/" + param2(0)
-                            version = param(7)
-                            Exit While
-                        End If
-                    End While
-                End Using
+                Dim jsonpath As String = (MainForm.appPath & "\latest.json")
+                Dim client1 As New WebClient
+                client1.Headers.Item("User-Agent") = "Mozilla/4.0"
+                client1.DownloadFile("https://api.github.com/repos/Pathoschild/SMAPI/releases/latest", jsonpath)
+                Dim client As New WebClient()
+                Dim stream As Stream = client.OpenRead(jsonpath)
+                Dim reader As New StreamReader(stream)
+                Dim jsonData As String = reader.ReadToEnd
+                reader.Close()
+
+                Dim release As GitRelease = JsonConvert.DeserializeObject(Of GitRelease)(jsonData)
+                Dim version = release.tag_name
+                Dim nurl = release.assets(1).browser_download_url
                 Dim fname = Path.GetFileName(nurl)
                 c = 10
                 Dim fnameoe As String = Path.GetFileNameWithoutExtension(fname)
