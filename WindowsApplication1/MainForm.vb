@@ -33,7 +33,7 @@ Public Class MainForm
     Public Shared Sfolder = "C:\"
     Public Shared gog = 0
     Public Shared cSVersion = "0"
-    Public Shared cVersion = "2.8a"
+    Public Shared cVersion = "3.0b"
     Dim notFound = 0
     Dim Skip = 0
     Shared errorlv = 0
@@ -115,56 +115,20 @@ Public Class MainForm
             End If
             My.Computer.FileSystem.MoveDirectory(from, MoveTo, True)
             errorlv = 3
-            System.IO.Directory.Delete(appPath & " \Update \ ", True)
+            System.IO.Directory.Delete(appPath & " \Update\", True)
             errorlv = 4
-            System.IO.Directory.CreateDirectory(appPath & " \Update \ ")
+            System.IO.Directory.CreateDirectory(appPath & " \Update\")
             errorlv = 5
-            While (Not System.IO.Directory.Exists(appPath & " \Update \ "))
+            While (Not System.IO.Directory.Exists(appPath & " \Update\"))
                 errorlv = 6
-                System.IO.Directory.CreateDirectory(appPath & " \Update \ ")
+                System.IO.Directory.CreateDirectory(appPath & " \Update\")
             End While
         Catch Ex As Exception
             MessageBox.Show(Ex.ToString)
         End Try
     End Function
 
-    Private Function installXNB(xspath As String)
-        Dim Form As New XNBForm
-        'open XNB Form
-        If Multiok = 0 Then
-            Form.ShowDialog()
-        End If
-        'Parse folder from form
-        Dim xtpath = XNBForm.XtFolder & " \ " & Fname
-        Dim name = shPath(XNBForm.XtFolder) & " - " & Fname
-        If (Not IO.File.Exists(appPath & " \ Backup \ " & name)) Then
-            My.Computer.FileSystem.MoveFile(xtpath, appPath & " \ Backup \ " & name, True)
-        End If
-        IO.File.Copy(xspath, xtpath, True)
-        INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\XNB.ini")
-        If XNBlist.Items.Contains(name) = False Then
-            XNBlist.Items.Add(name)
-        End If
-    End Function
 
-    Function deleteXNB(name As String)
-        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\XNB.ini")
-        For Each item As String In arr
-            If item.Contains("=") Then
-                If item.Contains("Content") Then
-                    If item.Contains(name) Then
-                        Dim param() As String = item.Split("="c)
-                        'MsgBox(param(0)) 'output the name
-                        My.Computer.FileSystem.MoveFile(appPath & "\Backup\" & param(0), param(1), True)
-                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\XNB.ini")
-                        XNBlist.Items.Remove(param(0))
-                    End If
-
-                End If
-            End If
-        Next
-
-    End Function
 
     Public Shared SHAcheck As String
     Public Event UnhandledException(sender As Object, e As UnhandledExceptionEventArgs)
@@ -328,6 +292,13 @@ Public Class MainForm
             client.Headers.Item("User-Agent") = "Mozilla/4.0"
             client.DownloadFile("https://drive.google.com/uc?export=download&id=0B94u0_R6vixWUy12RVpJN1NkWlU", appPath & "\SDVMM Updater.exe")
         End If
+
+        If (Not System.IO.File.Exists(appPath & "\Newtonsoft.Json.dll")) Then
+            Dim client As New WebClient
+            client.Headers.Item("User-Agent") = "Mozilla/4.0"
+            client.DownloadFile("https://drive.google.com/uc?export=download&id=0B94u0_R6vixWNmUxLVpLQksyRUU", appPath & "\Newtonsoft.Json.dll")
+        End If
+
 
         If CheckVersion(cVersion) = True Then
             If MsgBox("SDVMM Update found. Install now?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
@@ -536,14 +507,53 @@ Public Class MainForm
 
 
 
+    Private Function installXNB(xspath As String)
+
+        Dim Form As New XNBForm
+        'open XNB Form
+        If Multiok = 0 Then
+            Form.ShowDialog()
+        End If
+        Dim xtpath = XNBForm.XtFolder & "\" & Fname
+        Dim name = shPath(XNBForm.XtFolder) & "-" & Fname
+        If (Not IO.File.Exists(appPath & "\Backup\" & name)) Then
+            My.Computer.FileSystem.MoveFile(xtpath, appPath & "\Backup\" & name, True)
+        End If
+        IO.File.Copy(xspath, xtpath, True)
+        INI_WriteValueToFile("XNB Backup paths", name, xtpath, Application.UserAppDataPath & "\XNB.ini")
+        If XNBlist.Items.Contains(name) = False Then
+            XNBlist.Items.Add(name)
+        End If
+    End Function
+
+    Function deleteXNB(name As String)
+        Dim arr() As String = IO.File.ReadAllLines(Application.UserAppDataPath & "\XNB.ini")
+        For Each item As String In arr
+            If item.Contains("=") Then
+                If item.Contains("Content") Then
+                    If item.Contains(name) Then
+                        Dim param() As String = item.Split("="c)
+                        'MsgBox(param(0)) 'output the name
+                        My.Computer.FileSystem.MoveFile(appPath & "\Backup\" & param(0), param(1), True)
+                        INI_WriteValueToFile("XNB Backup paths", param(0), Nothing, Application.UserAppDataPath & "\XNB.ini")
+                        XNBlist.Items.Remove(param(0))
+                    End If
+
+                End If
+            End If
+        Next
+
+    End Function
+
 
     Private Sub AddMod_Click(sender As Object, e As EventArgs) Handles addm.Click
+        Dim isZip As Boolean = False
         Dim myStream As Stream = Nothing
         Dim openFileDialog1 As New OpenFileDialog()
         Dim ddir = folder & "\"
         Dim number = Loadorder.Items.Count + 1
         openFileDialog1.InitialDirectory = lastdir
-        openFileDialog1.Filter = "SMAPI Mod files (*.dll)|*.dll|XNB Mods (*.XNB)|*.xnb|SMAPI MOD Ini(*.ini)|*.ini|Zip Files|*.zip|All|*.*"
+        openFileDialog1.Filter = "SMAPI Mod files (*.dll)|*.dll|XNB Mods (*.XNB)|*.xnb|SMAPI Mod Ini(*.ini)|*.ini|Zip Files|*.zip|All|*.*"
         openFileDialog1.FilterIndex = 1
         openFileDialog1.Title = "Select SMAPI-Mod"
         openFileDialog1.Multiselect = True
@@ -562,11 +572,13 @@ Public Class MainForm
                         Dim tdir = ddir & Path.GetFileName(s)
                         Dim ext = Path.GetExtension(s)
                         Dim help As String = ""
+                        Dim test As String = ""
                         If ext = ".xnb" Then
                             xpath = s
                             installXNB(xpath)
                         Else
                             If ext = ".zip" Then
+                                isZip = True
                                 number = Loadorder.Items.Count + 1
                                 tdir = Path.GetDirectoryName(s) & "\" & Path.GetFileNameWithoutExtension(s) & "\"
                                 zip(s.ToString, tdir, 2, False)
@@ -579,15 +591,23 @@ Public Class MainForm
                                         Exit For
                                     End If
                                     If Path.GetExtension(foundFile) = ".xnb" Then
-                                        MsgBox("Zip contains XNB Files, please select the Files(s) you want to install")
-                                        openFileDialog1.InitialDirectory = tdir
-                                        openFileDialog1.Filter = "XNB Mods (*.XNB)|*.xnb"
-                                        openFileDialog1.FilterIndex = 1
-                                        openFileDialog1.Title = "Select XNB-Mod"
-                                        openFileDialog1.Multiselect = True
-                                        If openFileDialog1.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
-                                            xpath = s
-                                            installXNB(xpath)
+                                        Dim openFileDialog2 As New OpenFileDialog()
+                                        MsgBox("Zip contains XNB Files, please Select the Files(s) you want To install")
+                                        openFileDialog2.InitialDirectory = tdir
+                                        openFileDialog2.Filter = "XNB Mods (*.XNB)|*.xnb"
+                                        openFileDialog2.FilterIndex = 1
+                                        openFileDialog2.Title = "Select XNB-Mod"
+                                        openFileDialog2.Multiselect = True
+                                        If openFileDialog2.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                                            Mulitcount = 0
+                                            For Each ss As String In openFileDialog2.FileNames
+                                                Mulitcount += 1
+                                            Next
+                                            For Each ss As String In openFileDialog2.FileNames
+                                                xpath = ss
+                                                Fname = Path.GetFileName(ss)
+                                                installXNB(ss)
+                                            Next
                                         End If
                                         Exit Sub
                                     End If
@@ -617,14 +637,14 @@ Public Class MainForm
                                     '   MsgBox("Couldn't find " & Path.GetFileNameWithoutExtension(s) & ".json . The mod may not Work.")
                                     ' End If
                                     If ModList.Items.Contains(Path.GetFileName(s)) = False Then
-                                        If Path.GetExtension(Path.GetExtension(s)) = ".ini" Then
-                                        Else
-                                            ModList.Items.Add(number & "-" & Path.GetFileName(s))
-                                            Loadorder.Items.Add(number & "-" & Path.GetFileName(s))
-                                        End If
-                                    End If
-                                End If
-                            End If
+                    If Path.GetExtension(Path.GetExtension(s)) = ".ini" Then
+                    Else
+                        ModList.Items.Add(Number & "-" & Path.GetFileName(s))
+                        Loadorder.Items.Add(Number & "-" & Path.GetFileName(s))
+                    End If
+                End If
+            End If
+        End If
                         End If
                     Next
                     Multiok = 0
@@ -891,25 +911,6 @@ Public Class MainForm
         Dim c = 1
         Dim x As String = ""
         Try
-            If System.IO.File.Exists(appPath & "\Update\StardewModdingAPI.exe") Then
-                If MsgBox("SMAPI Update Available! Do you want to download the update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
-                    Call Update()
-                End If
-            End If
-            If IO.Directory.Exists(appPath & "\Update\") Then
-                Dim Check = Directory.GetFiles(appPath & "\Update\", "*.zip")
-                If Check.Length = 1 Then
-                    If MsgBox("SMAPI Update Available! Do you want to download the update SMAPI now?", MsgBoxStyle.YesNo) = DialogResult.Yes Then
-                        Dim fileEntries As String() = Directory.GetFiles(appPath & "\Update\", "*.zip")
-                        Dim sOnlyFileName As String
-                        For Each sFileName In fileEntries
-                            sOnlyFileName = System.IO.Path.GetFileName(sFileName)
-                        Next
-                        zip(appPath & "\Update\" & sOnlyFileName, appPath & "\Update\", 1, True)
-                    End If
-                End If
-            End If
-
             If My.Computer.Network.IsAvailable Then
                 If File.Exists((MainForm.appPath & "\latest.json")) Then
                     File.Delete((MainForm.appPath & "\latest.json"))
@@ -941,7 +942,12 @@ Public Class MainForm
                         INI_WriteValueToFile("SMAPI Details", "Version", fnameoe, Application.UserAppDataPath & "\SDVMM.ini")
                         Dim from As String = appPath & "\Update\" & fname
                         Dim fto As String = appPath & "\Update\" & fnameoe & "\"
-                        zip(from, fto, 1, True)
+                        zip(from, fto, 1, False)
+                        Dim moveto As String
+                        For Each Dir As String In Directory.GetDirectories(fto)
+                            moveto = Dir + "\Windows\"
+                        Next
+                        My.Computer.FileSystem.MoveDirectory(moveto, folder, True)
                         cSVersion = INI_ReadValueFromFile("SMAPI Details", "Version", "SMAPI-0.37.1A", Application.UserAppDataPath & "\SDVMM.ini")
                         cSVersion = version
                         INI_WriteValueToFile("SMAPI Details", "Version", version, Application.UserAppDataPath & "\SDVMM.ini")
