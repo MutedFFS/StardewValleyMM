@@ -1,10 +1,10 @@
 ﻿Imports System.IO
 
 Public Class INIForm
-    Dim folder = INI_ReadValueFromFile("General", "GameFolder", "C:\", Application.UserAppDataPath & "\SDVMM.ini")
-    Dim Sfolder = INI_ReadValueFromFile("General", "SteamFolder", "C:\", Application.UserAppDataPath & "\SDVMM.ini")
-    Dim gog = INI_ReadValueFromFile("General", "Good Old Game Version", 0, Application.UserAppDataPath & "\SDVMM.ini")
-    Dim rchannel = INI_ReadValueFromFile("General", "Release Channel", "Stable", Application.UserAppDataPath & "\SDVMM.ini")
+    Dim folder = INI_ReadValueFromFile("General", "GameFolder", "C:" & sep , Application.UserAppDataPath &  sep & "SDVMM.ini")
+    Dim Sfolder = INI_ReadValueFromFile("General", "SteamFolder", "C:" & sep , Application.UserAppDataPath &  sep & "SDVMM.ini")
+    Dim gog = INI_ReadValueFromFile("General", "Good Old Game Version", 0, Application.UserAppDataPath &  sep & "SDVMM.ini")
+    Dim rchannel = INI_ReadValueFromFile("General", "Release Channel", "Stable", Application.UserAppDataPath &  sep & "SDVMM.ini")
 
     Private Declare Ansi Function GetPrivateProfileString Lib "kernel32.dll" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
 
@@ -79,18 +79,18 @@ Public Class INIForm
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Save.Click
-        INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath & "\SDVMM.ini")
-        INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath & "\SDVMM.ini")
-        INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath & "\SDVMM.ini")
-        INI_WriteValueToFile("General", "folder", folder, Application.UserAppDataPath & "\SDVMM.ini")
-        INI_WriteValueToFile("General", "Release Channel", rchannel, Application.UserAppDataPath & "\SDVMM.ini")
+        INI_WriteValueToFile("General", "GameFolder", folder, Application.UserAppDataPath &  sep & "SDVMM.ini")
+        INI_WriteValueToFile("General", "SteamFolder", Sfolder, Application.UserAppDataPath &  sep & "SDVMM.ini")
+        INI_WriteValueToFile("General", "Good Old Game Version", gog, Application.UserAppDataPath &  sep & "SDVMM.ini")
+        INI_WriteValueToFile("General", "folder", folder, Application.UserAppDataPath &  sep & "SDVMM.ini")
+        INI_WriteValueToFile("General", "Release Channel", rchannel, Application.UserAppDataPath &  sep & "SDVMM.ini")
         Close()
     End Sub
 
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles cSfolder.Click
         Dim myStream As Stream = Nothing
         Dim openFileDialog1 As New OpenFileDialog()
-        openFileDialog1.InitialDirectory = "c:\"
+        openFileDialog1.InitialDirectory = "c:" & sep 
         openFileDialog1.Filter = "Steam.exe|Steam.exe"
         openFileDialog1.FilterIndex = 2
         openFileDialog1.Title = "Select Steam Exe"
@@ -116,7 +116,7 @@ Public Class INIForm
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles cGfolder.Click
         Dim myStream As Stream = Nothing
         Dim openFileDialog1 As New OpenFileDialog()
-        openFileDialog1.InitialDirectory = "c:\"
+        openFileDialog1.InitialDirectory = "c:" & sep 
         openFileDialog1.Filter = "Stardew Valley.exe|Stardew Valley.exe"
         openFileDialog1.FilterIndex = 2
         openFileDialog1.Title = "Select Stardew Valley Exe"

@@ -9,7 +9,7 @@ Public Class Webrowser
     Private Sub webBrowser1_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs)
         If e.Url.Segments(e.Url.Segments.Length - 1).EndsWith(".zip" Or ".7z") Then
             e.Cancel = True
-            Dim filepath As String = "C:\\"
+            Dim filepath As String = "C:" & sep & sep
             Dim client As New WebClient()
             client.DownloadFileAsync(e.Url, filepath)
         End If

@@ -37,26 +37,26 @@ Partial Class MainForm
         Me.Button2 = New System.Windows.Forms.Button()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
-        Me.TabPage3 = New System.Windows.Forms.TabPage()
-        Me.Button4 = New System.Windows.Forms.Button()
-        Me.up = New System.Windows.Forms.Button()
-        Me.Loadorder = New System.Windows.Forms.ListBox()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.XNBlist = New System.Windows.Forms.ListBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
-        Me.refresh = New System.Windows.Forms.Button()
+        Me.openDFolder = New System.Windows.Forms.Button()
+        Me.openModFolder = New System.Windows.Forms.Button()
+        Me.refreshb = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.dModList = New System.Windows.Forms.Label()
         Me.ModListd = New System.Windows.Forms.ListBox()
         Me.ModList = New System.Windows.Forms.ListBox()
         Me.Tab = New System.Windows.Forms.TabControl()
-        Me.openModFolder = New System.Windows.Forms.Button()
-        Me.openDFolder = New System.Windows.Forms.Button()
+        Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.Button4 = New System.Windows.Forms.Button()
+        Me.up = New System.Windows.Forms.Button()
+        Me.Loadorder = New System.Windows.Forms.ListBox()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.TabPage3.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
         Me.Tab.SuspendLayout()
+        Me.TabPage3.SuspendLayout()
         Me.SuspendLayout()
         '
         'PictureBox1
@@ -184,44 +184,6 @@ Partial Class MainForm
         Me.ProgressBar1.Size = New System.Drawing.Size(259, 23)
         Me.ProgressBar1.TabIndex = 22
         '
-        'TabPage3
-        '
-        Me.TabPage3.Controls.Add(Me.Button4)
-        Me.TabPage3.Controls.Add(Me.up)
-        Me.TabPage3.Controls.Add(Me.Loadorder)
-        Me.TabPage3.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage3.Name = "TabPage3"
-        Me.TabPage3.Size = New System.Drawing.Size(435, 265)
-        Me.TabPage3.TabIndex = 2
-        Me.TabPage3.Text = "Load-Order"
-        Me.TabPage3.UseVisualStyleBackColor = True
-        '
-        'Button4
-        '
-        Me.Button4.Location = New System.Drawing.Point(251, 220)
-        Me.Button4.Name = "Button4"
-        Me.Button4.Size = New System.Drawing.Size(90, 30)
-        Me.Button4.TabIndex = 16
-        Me.Button4.Text = "▼"
-        Me.Button4.UseVisualStyleBackColor = True
-        '
-        'up
-        '
-        Me.up.Location = New System.Drawing.Point(251, 25)
-        Me.up.Name = "up"
-        Me.up.Size = New System.Drawing.Size(90, 30)
-        Me.up.TabIndex = 15
-        Me.up.Text = "▲"
-        Me.up.UseVisualStyleBackColor = True
-        '
-        'Loadorder
-        '
-        Me.Loadorder.FormattingEnabled = True
-        Me.Loadorder.Location = New System.Drawing.Point(17, 25)
-        Me.Loadorder.Name = "Loadorder"
-        Me.Loadorder.Size = New System.Drawing.Size(210, 225)
-        Me.Loadorder.TabIndex = 14
-        '
         'TabPage1
         '
         Me.TabPage1.Controls.Add(Me.XNBlist)
@@ -245,7 +207,7 @@ Partial Class MainForm
         '
         Me.TabPage2.Controls.Add(Me.openDFolder)
         Me.TabPage2.Controls.Add(Me.openModFolder)
-        Me.TabPage2.Controls.Add(Me.refresh)
+        Me.TabPage2.Controls.Add(Me.refreshb)
         Me.TabPage2.Controls.Add(Me.Label3)
         Me.TabPage2.Controls.Add(Me.dModList)
         Me.TabPage2.Controls.Add(Me.ModListd)
@@ -258,14 +220,32 @@ Partial Class MainForm
         Me.TabPage2.Text = "SMAPI Mods"
         Me.TabPage2.UseVisualStyleBackColor = True
         '
-        'refresh
+        'openDFolder
         '
-        Me.refresh.Location = New System.Drawing.Point(164, 236)
-        Me.refresh.Name = "refresh"
-        Me.refresh.Size = New System.Drawing.Size(113, 23)
-        Me.refresh.TabIndex = 17
-        Me.refresh.Text = "Refresh"
-        Me.refresh.UseVisualStyleBackColor = True
+        Me.openDFolder.Location = New System.Drawing.Point(354, 236)
+        Me.openDFolder.Name = "openDFolder"
+        Me.openDFolder.Size = New System.Drawing.Size(75, 23)
+        Me.openDFolder.TabIndex = 19
+        Me.openDFolder.Text = "Open Folder"
+        Me.openDFolder.UseVisualStyleBackColor = True
+        '
+        'openModFolder
+        '
+        Me.openModFolder.Location = New System.Drawing.Point(6, 236)
+        Me.openModFolder.Name = "openModFolder"
+        Me.openModFolder.Size = New System.Drawing.Size(75, 23)
+        Me.openModFolder.TabIndex = 18
+        Me.openModFolder.Text = "Open Folder"
+        Me.openModFolder.UseVisualStyleBackColor = True
+        '
+        'refreshb
+        '
+        Me.refreshb.Location = New System.Drawing.Point(164, 236)
+        Me.refreshb.Name = "refreshb"
+        Me.refreshb.Size = New System.Drawing.Size(113, 23)
+        Me.refreshb.TabIndex = 17
+        Me.refreshb.Text = "Refresh"
+        Me.refreshb.UseVisualStyleBackColor = True
         '
         'Label3
         '
@@ -315,23 +295,43 @@ Partial Class MainForm
         Me.Tab.Size = New System.Drawing.Size(443, 291)
         Me.Tab.TabIndex = 23
         '
-        'openModFolder
+        'TabPage3
         '
-        Me.openModFolder.Location = New System.Drawing.Point(6, 236)
-        Me.openModFolder.Name = "openModFolder"
-        Me.openModFolder.Size = New System.Drawing.Size(75, 23)
-        Me.openModFolder.TabIndex = 18
-        Me.openModFolder.Text = "Open Folder"
-        Me.openModFolder.UseVisualStyleBackColor = True
+        Me.TabPage3.Controls.Add(Me.Button4)
+        Me.TabPage3.Controls.Add(Me.up)
+        Me.TabPage3.Controls.Add(Me.Loadorder)
+        Me.TabPage3.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage3.Name = "TabPage3"
+        Me.TabPage3.Size = New System.Drawing.Size(435, 265)
+        Me.TabPage3.TabIndex = 2
+        Me.TabPage3.Text = "Load-Order"
+        Me.TabPage3.UseVisualStyleBackColor = True
         '
-        'openDFolder
+        'Button4
         '
-        Me.openDFolder.Location = New System.Drawing.Point(354, 236)
-        Me.openDFolder.Name = "openDFolder"
-        Me.openDFolder.Size = New System.Drawing.Size(75, 23)
-        Me.openDFolder.TabIndex = 19
-        Me.openDFolder.Text = "Open Folder"
-        Me.openDFolder.UseVisualStyleBackColor = True
+        Me.Button4.Location = New System.Drawing.Point(251, 220)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(90, 30)
+        Me.Button4.TabIndex = 16
+        Me.Button4.Text = "▼"
+        Me.Button4.UseVisualStyleBackColor = True
+        '
+        'up
+        '
+        Me.up.Location = New System.Drawing.Point(251, 25)
+        Me.up.Name = "up"
+        Me.up.Size = New System.Drawing.Size(90, 30)
+        Me.up.TabIndex = 15
+        Me.up.Text = "▲"
+        Me.up.UseVisualStyleBackColor = True
+        '
+        'Loadorder
+        '
+        Me.Loadorder.FormattingEnabled = True
+        Me.Loadorder.Location = New System.Drawing.Point(17, 25)
+        Me.Loadorder.Name = "Loadorder"
+        Me.Loadorder.Size = New System.Drawing.Size(210, 225)
+        Me.Loadorder.TabIndex = 14
         '
         'MainForm
         '
@@ -363,11 +363,11 @@ Partial Class MainForm
         Me.Name = "MainForm"
         Me.Text = "SDVMM V2.1a      Smapi V0"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.TabPage3.ResumeLayout(False)
         Me.TabPage1.ResumeLayout(False)
         Me.TabPage2.ResumeLayout(False)
         Me.TabPage2.PerformLayout()
         Me.Tab.ResumeLayout(False)
+        Me.TabPage3.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -386,19 +386,19 @@ Partial Class MainForm
     Friend WithEvents Button2 As System.Windows.Forms.Button
     Friend WithEvents Button3 As Button
     Friend WithEvents ProgressBar1 As ProgressBar
-    Friend WithEvents TabPage3 As TabPage
-    Friend WithEvents Button4 As Button
-    Friend WithEvents up As Button
-    Friend WithEvents Loadorder As ListBox
     Friend WithEvents TabPage1 As TabPage
     Friend WithEvents XNBlist As ListBox
     Friend WithEvents TabPage2 As TabPage
+    Friend WithEvents openDFolder As Button
+    Friend WithEvents openModFolder As Button
+    Friend WithEvents refreshb As Button
     Friend WithEvents Label3 As Label
     Friend WithEvents dModList As Label
     Friend WithEvents ModListd As ListBox
     Friend WithEvents ModList As ListBox
     Friend WithEvents Tab As TabControl
-    Friend WithEvents refresh As Button
-    Friend WithEvents openDFolder As Button
-    Friend WithEvents openModFolder As Button
+    Friend WithEvents TabPage3 As TabPage
+    Friend WithEvents Button4 As Button
+    Friend WithEvents up As Button
+    Friend WithEvents Loadorder As ListBox
 End Class
