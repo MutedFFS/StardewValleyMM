@@ -33,7 +33,7 @@ Public Class MainForm
     Public Shared Sfolder = "C:" & sep
     Public Shared gog = 0
     Public Shared cSVersion = "0"
-    Public Shared cVersion = "3.1"
+    Public Shared cVersion = "3.1a"
     Dim notFound = 0
     Dim Skip = 0
     Shared errorlv = 0
@@ -615,10 +615,14 @@ Public Class MainForm
                         Dim help As String = ""
                         Dim test As String = ""
                         If ext = ".xnb" Then
-                            found = rec(folder & sep & "content" & sep, Fname)
+                            MsgBox(Fname.Contains("spring_"))
+                            If (Fname.Contains("winter_") Or Fname.Contains("srping_") Or Fname.Contains("summer_") Or Fname.Contains("fall_") = True) Then
+                                found = rec(folder & sep & "content" & sep, Fname)
+                            Else
+                                xpath = s
+                                installXNB(xpath)
+                            End If
 
-                            xpath = s
-                            installXNB(xpath)
                         Else
                             If ext = ".zip" Then
                                 isZip = True
