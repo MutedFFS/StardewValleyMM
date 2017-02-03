@@ -33,7 +33,7 @@ Public Class MainForm
     Public Shared Sfolder = "C:" & sep
     Public Shared gog = 0
     Public Shared cSVersion = "0"
-    Public Shared cVersion = "3.1a"
+    Public Shared cVersion = "3.1b"
     Dim notFound = 0
     Dim Skip = 0
     Shared errorlv = 0
@@ -277,8 +277,9 @@ Public Class MainForm
         Return Version.Parse(FileVersionInfo.GetVersionInfo(filename).FileVersion)
     End Function
 
-
+    Public foundfile As Boolean = False
     Public Function rec(ByVal SourcePath As String, searched As String)
+
         Dim SourceDir As DirectoryInfo = New DirectoryInfo(SourcePath)
         Dim pathIndex As Integer
         pathIndex = SourcePath.LastIndexOf("\")
@@ -292,8 +293,13 @@ Public Class MainForm
 
 
             For Each childFile As FileInfo In SourceDir.GetFiles(searched, SearchOption.AllDirectories)
-                foundXNB = childFile.FullName
-                Return True
+                If foundfile = False Then
+                    foundXNB = childFile.FullName
+                    foundfile = True
+                Else
+                    foundXNB = Nothing
+                    Return False
+                End If
             Next
         Else
             Throw New DirectoryNotFoundException("Source directory does not exist: " + SourceDir.FullName)
@@ -542,7 +548,7 @@ Public Class MainForm
     Private Function installXNB(xspath As String)
         Dim xtpath As String = Nothing
         Dim name As String = Nothing
-        If found = False Then
+        If (foundXNB Is Nothing) Then
             Dim Form As New XNBForm
             'open XNB Form
             If Multiok = 0 Then
@@ -615,14 +621,12 @@ Public Class MainForm
                         Dim help As String = ""
                         Dim test As String = ""
                         If ext = ".xnb" Then
-                            MsgBox(Fname.Contains("spring_"))
-                            If (Fname.Contains("winter_") Or Fname.Contains("srping_") Or Fname.Contains("summer_") Or Fname.Contains("fall_") = True) Then
-                                found = rec(folder & sep & "content" & sep, Fname)
-                            Else
-                                xpath = s
-                                installXNB(xpath)
-                            End If
 
+                            If (Fname.Contains("winter_") Or Fname.Contains("srping_") Or Fname.Contains("summer_") Or Fname.Contains("fall_") = False) Then
+                                found = rec(folder & sep & "content" & sep, Fname)
+                            End If
+                            xpath = s
+                            installXNB(xpath)
                         Else
                             If ext = ".zip" Then
                                 isZip = True
