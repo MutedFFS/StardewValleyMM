@@ -33,7 +33,7 @@ Public Class MainForm
     Public Shared Sfolder = "C:" & sep
     Public Shared gog = 0
     Public Shared cSVersion = "0"
-    Public Shared cVersion = "3.1b"
+    Public Shared cVersion = "3.1c"
     Dim notFound = 0
     Dim Skip = 0
     Shared errorlv = 0
@@ -150,6 +150,23 @@ Public Class MainForm
         Public Property browser_download_url As String
     End Class
 
+    Public Class Manifest
+        Public Property Name As String
+        Public Property Author As String
+        Public Property Version As ModVersion
+        Public Property Description As String
+        Public Property UniqueID As String
+        Public Property PerSaveConfigs As String
+        Public Property EntryDll As String
+    End Class
+
+    Public Class ModVersion
+        Public Property MajorVersion As Integer
+        Public Property MinorVersion As Integer
+        Public Property PatchVersion As Integer
+        Public Property Build As String
+    End Class
+
     Shared Durl = ""
 
     Public Shared Function CheckVersion(Version As String) As Boolean
@@ -170,10 +187,9 @@ Public Class MainForm
                 client.Headers.Item("User-Agent") = "Mozilla/4.0"
                 client.DownloadFile("https://api.github.com/repos/yuukiw/StardewValleyMM/releases/latest", jsonpath)
                 Dim stream As Stream = client.OpenRead(jsonpath)
-                Dim reader As New StreamReader(stream)
-                Dim jsonData As String = reader.ReadToEnd
-                reader.Close()
-
+                Dim read As New StreamReader(stream)
+                Dim jsonData As String = read.ReadToEnd
+                read.Close()
                 Dim release As GitRelease = JsonConvert.DeserializeObject(Of GitRelease)(jsonData)
                 Dim Update_Version = release.tag_name
                 Durl = release.assets(0).browser_download_url
@@ -232,7 +248,11 @@ Public Class MainForm
                     If item.Contains("/SDVMM") Then
                         Dim param() As String = item.Split("/")
                         If file = Nothing Then
-                            version = param(5)
+                            Try
+                                version = param(5)
+                            Catch ex As Exception
+                                Dim xyz = 0
+                            End Try
                         End If
                     End If
                 Next
@@ -435,8 +455,12 @@ Public Class MainForm
             result = String.Compare(file, "Content")
             If result > 0 Or result < 0 Then
                 If ModList.Items.Contains(file & ".dll") = False Then 'check to defend against double entries
-                    ModList.Items.Add(file & ".dll")
-                    Loadorder.Items.Add(file & ".dll")
+                    If (file = ".cache") Then
+
+                    Else
+                        ModList.Items.Add(file & ".dll")
+                        Loadorder.Items.Add(file & ".dll")
+                    End If
                 End If
             End If
         Next
@@ -445,7 +469,7 @@ Public Class MainForm
             result = String.Compare(file, "Content")
             If result > 0 Or result < 0 Then
                 If ModList.Items.Contains(file & ".dll") = False Then 'check to defend against double entries
-                    MsgBox(folder & sep & "Mod" & sep & file, MsgBoxStyle.OkOnly)
+                    ' MsgBox(folder & sep & "Mod" & sep & file, MsgBoxStyle.OkOnly)
                     My.Computer.FileSystem.MoveDirectory(Dir, folder & sep & "Mods" & sep & file & sep, True)
                 End If
             End If
@@ -634,11 +658,12 @@ Public Class MainForm
                                 tdir = Path.GetDirectoryName(s) & sep & Path.GetFileNameWithoutExtension(s) & sep
                                 zip(s.ToString, tdir, 2, False)
                                 '  Threading.Thread.CurrentThread.Sleep(10000)
+
                                 Dim List = My.Computer.FileSystem.GetFiles(tdir, FileIO.SearchOption.SearchAllSubDirectories, "*.*")
                                 For Each foundFile In List
                                     If Path.GetExtension(foundFile) = ".dll" Then
                                         tdir = Path.GetDirectoryName(foundFile) & sep
-                                        help = Path.GetDirectoryName(foundFile) & ".exe"
+                                        help = Path.GetDirectoryName(foundfile) & ".dll"
                                         Exit For
                                     End If
                                     If Path.GetExtension(foundFile) = ".xnb" Then
@@ -712,6 +737,17 @@ Public Class MainForm
             End Try
         End If
         refreshb.PerformClick()
+    End Sub
+
+    Private Sub ModList_tooltip(ByVal sender As Object, ByVal e As System.EventArgs) Handles ModList.SelectedIndexChanged
+        Dim mIndex As Integer = ModList.SelectedIndex
+        Dim mText = ModList.Items(mIndex)
+        Dim stream As String = folder & sep & "mods" & sep & Path.GetFileNameWithoutExtension(mText) & sep & "Manifest.json"
+        Dim reader As New StreamReader(stream)
+        Dim jsonData As String = reader.ReadToEnd
+        reader.Close()
+        Dim details As Manifest = JsonConvert.DeserializeObject(Of Manifest)(jsonData)
+        ToolTip1.SetToolTip(ModList, "Author: " & details.Author & vbNewLine & "Version: " & details.Version.MajorVersion & "." & details.Version.MinorVersion & "." & details.Version.PatchVersion & vbNewLine & "Description: " & details.Description)
     End Sub
 
 
@@ -997,6 +1033,9 @@ Public Class MainForm
                         Dim moveto As String = ""
                         For Each Dir As String In Directory.GetDirectories(fto)
                             moveto = Dir + sep & "Windows" & sep
+                            If (Not Directory.Exists(moveto)) Then
+                                moveto = Dir + sep & "internal" & sep & "Windows" & sep
+                            End If
                         Next
                         My.Computer.FileSystem.MoveDirectory(moveto, folder, True)
                         cSVersion = INI_ReadValueFromFile("SMAPI Details", "Version", "SMAPI-0.37.1A", Application.UserAppDataPath & sep & "SDVMM.ini")
@@ -1194,6 +1233,8 @@ Public Class MainForm
     Private Sub Refresh_list(sender As Object, e As EventArgs) Handles refreshb.Click
 
     End Sub
+
+
 End Class
 
 

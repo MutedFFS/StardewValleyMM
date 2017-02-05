@@ -22,6 +22,7 @@ Partial Class MainForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.addm = New System.Windows.Forms.Button()
@@ -52,6 +53,7 @@ Partial Class MainForm
         Me.Button4 = New System.Windows.Forms.Button()
         Me.up = New System.Windows.Forms.Button()
         Me.Loadorder = New System.Windows.Forms.ListBox()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
@@ -401,4 +403,5 @@ Partial Class MainForm
     Friend WithEvents Button4 As Button
     Friend WithEvents up As Button
     Friend WithEvents Loadorder As ListBox
+    Friend WithEvents ToolTip1 As ToolTip
 End Class
